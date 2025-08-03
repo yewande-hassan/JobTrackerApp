@@ -1,0 +1,10 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    min-width: 99vw;
+}
+.dashboard-container{
+    background-color: #101828;
+    color: #fff;
+    height: 80vh; 
+}
