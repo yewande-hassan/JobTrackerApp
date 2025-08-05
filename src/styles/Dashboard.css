@@ -7,4 +7,10 @@
     background-color: #101828;
     color: #fff;
     height: 80vh; 
+    text-align: start;
+    padding: 2rem;
+}
+.cards{
+    display: flex;
+    justify-content: space-between;
 }
