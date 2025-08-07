@@ -1,28 +1,60 @@
-const cardData =[
-    {id: 1,
-    companyName :"Twitch",
-    position:"Junior Java Engineer",
-    companyLogo:"",
-    date:new Date()
-    },
-    {id: 2,
-    companyName :"Snapchat",
-    position:"Senior IOS Developer",
-    companyLogo:"",
-    date:new Date()
-    },
-     {id: 3,
-    companyName :"Spotify",
-    position:"Full StacK Developer",
-    companyLogo:"",
-    date:new Date()
-    },
-      {id: 4,
-    companyName :"Zoom",
-    position:"Full StacK Developer",
-    companyLogo:"",
-    date:new Date()
-    },
-]
+const CardData = [
+  {
+    id: 1,
+    company: "Twitch",
+    role: "Junior Java Engineer",
+    date: "12 Apr 2024",
+    logo: "twitch",
+    status: "saved",
+  },
+  {
+    id: 2,
+    company: "Snapchat",
+    role: "Senior IOS Developer",
+    date: "10 Apr 2024",
+    logo: "snapchat",
+    status: "saved",
+  },
+  {
+    id: 3,
+    company: "Spotify",
+    role: "Full stack developer",
+    date: "10 Apr 2024",
+    logo: "spotify",
+    status: "saved",
+  },
+  {
+    id: 4,
+    company: "Shopify",
+    role: "Junior Java Engineer",
+    date: "12 Apr 2024",
+    logo: "shopify",
+    status: "applied",
+  },
+  {
+    id: 5,
+    company: "Snapchat",
+    role: "Senior IOS Developer",
+    date: "10 Apr 2024",
+    logo: "snapchat",
+    status: "applied",
+  },
+  {
+    id: 6,
+    company: "Uber",
+    role: "Full stack developer",
+    date: "10 Apr 2024",
+    logo: "uber",
+    status: "applied",
+  },
+  {
+    id: 7,
+    company: "Snapchat",
+    role: "Senior IOS Developer",
+    date: "10 Apr 2024",
+    logo: "snapchat",
+    status: "interview",
+  },
+];
 
-export default cardData
+export default CardData;

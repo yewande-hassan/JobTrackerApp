@@ -1,17 +1,28 @@
-.card-container{
-   max-height: 50vh;
-   width:100%;
-   max-width:300px;
-   background-color: rgb(32, 35, 52);
-   padding: 1rem;
-   border-radius: 5px;
-   -webkit-border-radius: 5px;
-   -moz-border-radius: 5px;
-   -ms-border-radius: 5px;
-   -o-border-radius: 5px;
-}
 .card-heading{
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+.card {
+  background: #2d2f40;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  max-height: 18vh;
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.role {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+.date {
+  font-size: 0.8rem;
+  color: gray;
 }
