@@ -1,11 +1,24 @@
+import { useState } from "react";
 import Card from "../components/Card"
 import Navbar from "../components/Navbar"
+import Modal from "../components/Modal";
 import cardsData from "../data/CardData";
 import "../styles/Dashboard.css"
 import { FaPlus } from "react-icons/fa";
 
-const sections = ["saved", "applied", "interview"];
+const sections = ["saved", "applied", "interview","offer"];
 function Dashboard() {
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [isModalOpen, setIsModalOpen] =useState(false);
+
+  const handleCardClick = (job)=>{
+    setSelectedJob(job)
+    setIsModalOpen(true)
+  }
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedJob(null);
+  };
 
   return (
     <div className="container">
@@ -24,26 +37,26 @@ function Dashboard() {
                   ? "Saved Jobs"
                   : section === "applied"
                   ? "Applied to Jobs"
-                  : "Interview Jobs"}
+                  :section === "interview"
+                  ?"Interview Jobs"
+                :"Offer"}
               </h3>
               <span className="count">{filtered.length}</span>
                 </div>
                <FaPlus className="plus-btn"/>
             </div> 
             {filtered.map((job) => (
-              <Card
-                key={job.id}
-                company={job.company}
-                role={job.role}
-                date={job.date}
-                logo={job.logo}
-              />
+             <Card key={job.id} job={job} onClick={() => handleCardClick(job)} />
             ))}
           </div>
         );
       })}
 
     </div>
+        {/* Modal is conditionally rendered here */}
+        {isModalOpen && (
+          <Modal job={selectedJob} onClose={handleCloseModal} />
+        )}
     </div>
     </div>
   )

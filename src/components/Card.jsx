@@ -1,25 +1,24 @@
 
 import "../styles/Card.css"
-import { FaTwitch, FaSnapchat, FaSpotify, FaPlus } from "react-icons/fa";
-// import { FaPlus } from "react-icons/fa";
+import { FaTwitch, FaSnapchat, FaSpotify} from "react-icons/fa";
+
 
 const iconMap = {
   twitch: <FaTwitch color="#9146FF" />,
   snapchat: <FaSnapchat color="#FFFC00" />,
   spotify: <FaSpotify color="#1DB954" />,
-  // zoom: <FaZoom color="#2D8CFF" />,
 };
-function Card({role,date,company,logo}) {
+function Card({job,onClick}) {
 
   return (
       <>
-       <div className="card">
+       <div className="card" onClick={onClick}>
       <div className="card-heading">
-        <p className="company">{company}</p>
-        <span className="icon">{iconMap[logo]}</span>
+        <p className="company">{job.company}</p>
+        <span className="icon">{iconMap[job.logo]}</span>
       </div>
-      <p className="role">{role}</p>
-      <p className="date">{date}</p>
+      <p className="role">{job.role}</p>
+      <p className="date">{job.date}</p>
     </div>
       </>
   )

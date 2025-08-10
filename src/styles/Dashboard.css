@@ -2,6 +2,8 @@
     display: flex;
     flex-direction: column;
     min-width: 100vw;
+    max-height: 100vh;
+    overflow: scroll;
 }
 .dashboard-container{
     background-color: #101828;
@@ -15,12 +17,11 @@
     justify-content: space-between;
 }
 .section-column {
-  /* flex: 1; */
   background-color: #23263a;
   padding: 1rem;
   border-radius: 12px;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
-  max-width: 400px;
+  max-width: 300px;
   width:100%;
 }
 
