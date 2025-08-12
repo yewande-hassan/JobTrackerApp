@@ -4,30 +4,32 @@ import { FiEye, FiEyeOff } from 'react-icons/fi';
 import "../styles/Login.css"
 import { useRef, useState } from "react";
 import { useAuth } from "../context/useAuth";
-function Login() {
+function Signup() {
     const [showPassword,setShowPassword] = useState(false)
     const [error,setError] = useState('')
     const [loading,setLoading] = useState(false)
     const emailRef = useRef()
     const passwordRef = useRef()
-    const {login} = useAuth()
+    const passwordConfirmRef = useRef()
+    const {signup} = useAuth()
    
     const clickPassword =()=>{
         setShowPassword(prev =>!prev)
     }
     async function handleSubmit (e){
         e.preventDefault()
-        if(!emailRef.current.value){
-            setError('please enter your email')
+        if(passwordRef.current.value !== passwordConfirmRef.current.value){
+            setError('Password does not match')
+            return;
         }
          try{
             setError('')
             setLoading(true)
-          await login(emailRef.current.value,
-         passwordRef.current.value)
+            await signup(emailRef.current.value,passwordRef.current.value)
+            console.log("Signed up successfully")
             }
             catch{
-                setError('Failed to sign in')
+                setError('Failed to sign up')
             }
             setLoading(false)
     }
@@ -37,23 +39,29 @@ function Login() {
         <div className="login-container">
             <div className="left-container">
 
-            <h1>Welcome Back to Job Tracker!</h1>
+            <h1>Sign Up to Job Tracker!</h1>
             <form onSubmit={handleSubmit}>
                 {error && <div className="error">{error}</div>}
                 <input type='email' placeholder="Email Address" ref={emailRef}/>
                 <div className="input-container">
-                <input type={showPassword? "text" :"password"} placeholder="Password" ref={passwordRef.current}/>
+                <input type={showPassword? "text" :"password"} placeholder="Password" ref={passwordRef}/>
+                <span onClick={clickPassword} className="toggle-password">
+                {showPassword ? <FiEye/> :<FiEyeOff/>}
+                </span>
+                </div>
+                <div className="input-container">
+                <input type={showPassword? "text" :"password"} placeholder="Confirm Password" ref={passwordConfirmRef}/>
                 <span onClick={clickPassword} className="toggle-password">
                 {showPassword ? <FiEye/> :<FiEyeOff/>}
                 </span>
                 </div>
                 {/* <Link to="/dashboard"> */}
-                <button type="submit" disabled={loading} className="btn">Log In</button>
+                <button type="submit" disabled={loading} className="btn">Sign Up</button>
                 {/* </Link> */}
                
             </form>
             <div>
-                <p>Don't have an account?<Link to='/sign-up'> Sign up</Link></p>
+                <p>Already have an account?<Link to='/'> Log In</Link></p>
             </div>
             </div>
             <div className="right-container">
@@ -64,4 +72,4 @@ function Login() {
   )
 }
 
-export default Login
+export default Signup

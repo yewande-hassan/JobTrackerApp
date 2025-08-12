@@ -5,6 +5,8 @@ import Dashboard from './pages/Dashboard'
 import Setting from './pages/Setting'
 import Connection from './pages/Connection'
 import Report from './pages/Report'
+import Signup from './pages/Signup'
+
 
 
 function App() {
@@ -14,7 +16,8 @@ function App() {
     <Router>
       <Routes>
         {/* {Public Route} */}
-        <Route path="/" element={<Login/>}/>
+        <Route exact path="/" element={<Login/>}/>
+        <Route exact path="/sign-up" element={<Signup/>}/>
         {/* Protected route */}
       <Route path="/dashboard" element={<Dashboard/>}/>
       <Route path="/setting" element={<Setting/>}/>

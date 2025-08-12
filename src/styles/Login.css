@@ -63,3 +63,12 @@ input::placeholder {
     background-color: transparent;
     border: 1px solid #fff;
 }
+.error {
+  background-color: #ffe5e5;  /* light red background */
+  color: #b00020;             /* dark red text */
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #f5c2c2;  /* soft red border */
+  border-radius: 5px;
+  font-size: 0.9rem;
+}
