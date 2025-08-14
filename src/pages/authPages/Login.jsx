@@ -1,9 +1,10 @@
 
 import { Link } from "react-router-dom"
 import { FiEye, FiEyeOff } from 'react-icons/fi';
-import "../styles/Login.css"
+import "../../styles/Login.css"
 import { useRef, useState } from "react";
-import { useAuth } from "../context/useAuth";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 function Login() {
     const [showPassword,setShowPassword] = useState(false)
     const [error,setError] = useState('')
@@ -11,23 +12,27 @@ function Login() {
     const emailRef = useRef()
     const passwordRef = useRef()
     const {login} = useAuth()
+    const navigate = useNavigate();
    
     const clickPassword =()=>{
         setShowPassword(prev =>!prev)
     }
     async function handleSubmit (e){
         e.preventDefault()
-        if(!emailRef.current.value){
-            setError('please enter your email')
+        const email = emailRef.current.value;
+        const password = passwordRef.current.value;
+        if(!email || !password){
+            setError('please enter your email or password')
+            return
         }
          try{
             setError('')
             setLoading(true)
-          await login(emailRef.current.value,
-         passwordRef.current.value)
+            await login(email,password)
+            navigate("/dashboard")
             }
             catch{
-                setError('Failed to sign in')
+                setError('Failed to Log In')
             }
             setLoading(false)
     }
@@ -42,15 +47,12 @@ function Login() {
                 {error && <div className="error">{error}</div>}
                 <input type='email' placeholder="Email Address" ref={emailRef}/>
                 <div className="input-container">
-                <input type={showPassword? "text" :"password"} placeholder="Password" ref={passwordRef.current}/>
+                <input type={showPassword? "text" :"password"} placeholder="Password" ref={passwordRef}/>
                 <span onClick={clickPassword} className="toggle-password">
                 {showPassword ? <FiEye/> :<FiEyeOff/>}
                 </span>
                 </div>
-                {/* <Link to="/dashboard"> */}
                 <button type="submit" disabled={loading} className="btn">Log In</button>
-                {/* </Link> */}
-               
             </form>
             <div>
                 <p>Don't have an account?<Link to='/sign-up'> Sign up</Link></p>

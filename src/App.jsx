@@ -1,11 +1,11 @@
 import { BrowserRouter as Router,Route,Routes } from 'react-router-dom'
 import './App.css'
-import Login from './pages/Login'
+import Login from './pages/authPages/Login'
 import Dashboard from './pages/Dashboard'
 import Setting from './pages/Setting'
 import Connection from './pages/Connection'
 import Report from './pages/Report'
-import Signup from './pages/Signup'
+import Signup from './pages/authPages/Signup'
 
 
 

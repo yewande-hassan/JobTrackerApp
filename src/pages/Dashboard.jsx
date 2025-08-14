@@ -5,12 +5,13 @@ import Modal from "../components/Modal";
 import cardsData from "../data/CardData";
 import "../styles/Dashboard.css"
 import { FaPlus } from "react-icons/fa";
+import { useAuth } from "../context/AuthContext";
 
 const sections = ["saved", "applied", "interview","offer"];
 function Dashboard() {
   const [selectedJob, setSelectedJob] = useState(null);
   const [isModalOpen, setIsModalOpen] =useState(false);
-
+  const {currentUser} = useAuth()
   const handleCardClick = (job)=>{
     setSelectedJob(job)
     setIsModalOpen(true)
@@ -24,7 +25,7 @@ function Dashboard() {
     <div className="container">
     <Navbar/>
     <div className="dashboard-container">
-    <h2>Welcome back Yewande! 👋🏼</h2>
+    <h2>Welcome back {currentUser.email} 👋🏼</h2>
     <div className="cards">
         {sections.map((section) => {
         const filtered = cardsData.filter((card) => card.status === section);

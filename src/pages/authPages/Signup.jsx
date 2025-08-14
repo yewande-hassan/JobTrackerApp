@@ -1,9 +1,9 @@
 
 import { Link } from "react-router-dom"
 import { FiEye, FiEyeOff } from 'react-icons/fi';
-import "../styles/Login.css"
+import "../../styles/Login.css"
 import { useRef, useState } from "react";
-import { useAuth } from "../context/useAuth";
+import { useAuth } from '../../context/AuthContext'
 function Signup() {
     const [showPassword,setShowPassword] = useState(false)
     const [error,setError] = useState('')
@@ -18,14 +18,18 @@ function Signup() {
     }
     async function handleSubmit (e){
         e.preventDefault()
-        if(passwordRef.current.value !== passwordConfirmRef.current.value){
+          const email = emailRef.current.value;
+          const password = passwordRef.current.value;
+          const passwordConfirm = passwordConfirmRef.current.value;
+
+        if(password !== passwordConfirm){
             setError('Password does not match')
             return;
         }
          try{
             setError('')
             setLoading(true)
-            await signup(emailRef.current.value,passwordRef.current.value)
+            await signup(email,password)
             console.log("Signed up successfully")
             }
             catch{
@@ -55,9 +59,7 @@ function Signup() {
                 {showPassword ? <FiEye/> :<FiEyeOff/>}
                 </span>
                 </div>
-                {/* <Link to="/dashboard"> */}
                 <button type="submit" disabled={loading} className="btn">Sign Up</button>
-                {/* </Link> */}
                
             </form>
             <div>
