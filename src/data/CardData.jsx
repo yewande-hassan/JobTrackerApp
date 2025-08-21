@@ -1,4 +1,4 @@
-const CardData = [
+export const CardData = [
   {
     id: 1,
     company: "Twitch",
@@ -57,4 +57,25 @@ const CardData = [
   },
 ];
 
-export default CardData;
+
+
+export const sectionConfig = {
+  saved: {
+    icon: "/lsicon_save-filled.png",
+    label: "Saved Jobs",
+  },
+  applied: {
+    icon: "/applied-jobs.png",
+    label: "Applied to Jobs",
+  },
+  interview: {
+    icon: "/upcoming-interview.png",
+    label: "Interview Jobs",
+  },
+  offer: {
+    icon: "/offer.png",
+    label: "Offer",
+  },
+};
+
+
