@@ -19,8 +19,8 @@ function Login() {
     }
     async function handleSubmit (e){
         e.preventDefault()
-        const email = emailRef.current.value;
-        const password = passwordRef.current.value;
+        let email = emailRef.current.value;
+        let password = passwordRef.current.value;
         if(!email || !password){
             setError('please enter your email or password')
             return
@@ -35,17 +35,21 @@ function Login() {
                 setError('Failed to Log In')
             }
             setLoading(false)
+            emailRef.current.value = "";
+            passwordRef.current.value = "";
     }
 
   return (
     <>
         <div className="login-container">
             <div className="left-container">
-
-            <h1>Welcome Back to Job Tracker!</h1>
+            <div className="header">
+            <h1>Welcome Back! Let’s Get You Hired!</h1>
+            <p>Track your applications, follow up on opportunities, and land your dream job faster.</p>
+            </div>
             <form onSubmit={handleSubmit}>
                 {error && <div className="error">{error}</div>}
-                <input type='email' placeholder="Email Address" ref={emailRef}/>
+                <input type='email' placeholder="Enter your Email Address" ref={emailRef}/>
                 <div className="input-container">
                 <input type={showPassword? "text" :"password"} placeholder="Password" ref={passwordRef}/>
                 <span onClick={clickPassword} className="toggle-password">
@@ -55,11 +59,12 @@ function Login() {
                 <button type="submit" disabled={loading} className="btn">Log In</button>
             </form>
             <div>
-                <p>Don't have an account?<Link to='/sign-up'> Sign up</Link></p>
+                <p>Don't have an account yet?<Link to='/sign-up' className="link">   Sign up</Link></p>
             </div>
             </div>
             <div className="right-container">
-                <img src="/public/andrew-neel-cckf4TsHAuw-unsplash.jpg" alt="testing" className="bg-img"/>
+                <div class="bg-blur"></div>
+                <img src="/public/log-in.jpg" alt="testing" className="bg-img-login"/>
             </div>
         </div>
     </>
