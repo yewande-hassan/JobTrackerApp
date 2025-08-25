@@ -14,11 +14,18 @@ function Card({job,onClick}) {
       <>
        <div className="card" onClick={onClick}>
       <div className="card-heading">
-        <p className="company">{job.company}</p>
         <span className="icon">{iconMap[job.logo]}</span>
-      </div>
+        <div>
+      <p className="company">{job.company}</p>
       <p className="role">{job.role}</p>
       <p className="date">{job.date}</p>
+        </div>
+        <div>
+          <p className="match">86% Match</p>
+        </div>
+
+      </div>
+
     </div>
       </>
   )

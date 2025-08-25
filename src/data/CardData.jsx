@@ -5,7 +5,7 @@ export const CardData = [
     role: "Junior Java Engineer",
     date: "12 Apr 2024",
     logo: "twitch",
-    status: "saved",
+    status: "Saved",
   },
   {
     id: 2,
@@ -13,7 +13,7 @@ export const CardData = [
     role: "Senior IOS Developer",
     date: "10 Apr 2024",
     logo: "snapchat",
-    status: "saved",
+    status: "Saved",
   },
   {
     id: 3,
@@ -21,7 +21,7 @@ export const CardData = [
     role: "Full stack developer",
     date: "10 Apr 2024",
     logo: "spotify",
-    status: "saved",
+    status: "Saved",
   },
   {
     id: 4,
@@ -29,7 +29,7 @@ export const CardData = [
     role: "Junior Java Engineer",
     date: "12 Apr 2024",
     logo: "shopify",
-    status: "applied",
+    status: "Applied",
   },
   {
     id: 5,
@@ -37,7 +37,7 @@ export const CardData = [
     role: "Senior IOS Developer",
     date: "10 Apr 2024",
     logo: "snapchat",
-    status: "applied",
+    status: "Applied",
   },
   {
     id: 6,
@@ -45,7 +45,7 @@ export const CardData = [
     role: "Full stack developer",
     date: "10 Apr 2024",
     logo: "uber",
-    status: "applied",
+    status: "Applied",
   },
   {
     id: 7,
@@ -53,26 +53,34 @@ export const CardData = [
     role: "Senior IOS Developer",
     date: "10 Apr 2024",
     logo: "snapchat",
-    status: "interview",
+    status: "Interview",
   },
+  {
+    id: 8,
+    company: "Spotify",
+    role: "Full stack developer",
+    date: "10 Apr 2024",
+    logo: "spotify",
+    status: "Saved",
+  }
 ];
 
 
 
 export const sectionConfig = {
-  saved: {
+  Saved: {
     icon: "/lsicon_save-filled.png",
     label: "Saved Jobs",
   },
-  applied: {
+  Applied: {
     icon: "/applied-jobs.png",
     label: "Applied to Jobs",
   },
-  interview: {
+  Interview: {
     icon: "/upcoming-interview.png",
     label: "Interview Jobs",
   },
-  offer: {
+  Offer: {
     icon: "/offer.png",
     label: "Offer",
   },

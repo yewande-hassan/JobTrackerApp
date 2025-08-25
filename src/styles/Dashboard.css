@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     min-width: 100vw;
-    max-height: 100vh;
+    min-height: 100vh; 
     overflow: scroll;
 }
 .dashboard-container{
@@ -12,12 +12,21 @@
     text-align: start;
     padding: 2rem;
 }
+.top-header{
+  width: 40%;
+  margin: 52px 0;
+  font-size: 22px;
+}
+.top-header p{
+  font-size: 18px;
+  color: #AFABAB
+}
 .cards{
     display: flex;
     justify-content: space-between;
 }
 .section-column {
-  background-color: #23263a;
+  background-color: #121C2F;
   padding: 1rem;
   border-radius: 12px;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
@@ -37,11 +46,12 @@
 }
 .section-header h3 {
   font-size: 1.1rem;
+  margin-left: 10px;
   font-weight: 600;
 }
 
 .section-header .count {
-  background-color: #2d2f45;
+  background-color: #192742;
   padding: 0.2rem 0.6rem;
   border-radius: 999px;
   font-size: 0.8rem;
@@ -66,4 +76,16 @@
 
 .plus-btn:hover {
   background-color: #3c3f5a;
+}
+.add{
+  background-color: #192742;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 0;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+  max-width: 300px;
+  height: 5vh;
+  width:100%;
 }

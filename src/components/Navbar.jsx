@@ -7,7 +7,7 @@ function Navbar() {
 
   return (
     <div className="navbar-container">
-    <h1 className="logo-icon">TrackMyJob</h1>
+    <h1 className="logo-icon">Track<span className="home">MyJob</span></h1>
         <div className="nav-links">
         <Link to="/dashboard" className="nav-link">Board</Link>
         <Link to="connection" className="nav-link">Connections</Link>
@@ -15,13 +15,7 @@ function Navbar() {
         <Link to="/setting" className="nav-link">Settings</Link>
         </div>
         <div className="profile">
-            <div className="search">
-        <input type="text" placeholder="Search anything"/>
-        <span
-        className="search-icon">
-        <FaSearch/>
-        </span>
-            </div>
+            <FaSearch/>
             <FaBell/>
             <FaUserCircle/>
             
