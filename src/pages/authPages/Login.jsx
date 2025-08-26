@@ -47,7 +47,7 @@ function Login() {
             <h1>Welcome Back! Let’s Get You Hired!</h1>
             <p>Track your applications, follow up on opportunities, and land your dream job faster.</p>
             </div>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="forms">
                 {error && <div className="error">{error}</div>}
                 <input type='email' placeholder="Enter your Email Address" ref={emailRef}/>
                 <div className="input-container">

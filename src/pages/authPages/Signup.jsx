@@ -54,7 +54,7 @@ function Signup() {
             <h1>Welcome to Job Tracker!</h1>
             <p>Organize every application, take control of your career and visualize your progress, all in one place</p>
                 </div>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="forms">
                 {error && <div className="error">{error}</div>}
                 <input type='email' placeholder="Enter your email address" ref={emailRef}/>
                 <div className="input-container">

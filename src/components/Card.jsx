@@ -16,8 +16,8 @@ function Card({job,onClick}) {
       <div className="card-heading">
         <span className="icon">{iconMap[job.logo]}</span>
         <div>
-      <p className="company">{job.company}</p>
-      <p className="role">{job.role}</p>
+      <p className="company">{job.company_name}</p>
+      <p className="role">{job.job_title}</p>
       <p className="date">{job.date}</p>
         </div>
         <div>
