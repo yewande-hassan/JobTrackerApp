@@ -1,20 +1,25 @@
 
 import "../styles/Card.css"
-import { FaTwitch, FaSnapchat, FaSpotify} from "react-icons/fa";
 
-
-const iconMap = {
-  twitch: <FaTwitch color="#9146FF" />,
-  snapchat: <FaSnapchat color="#FFFC00" />,
-  spotify: <FaSpotify color="#1DB954" />,
-};
 function Card({job,onClick}) {
 
   return (
       <>
        <div className="card" onClick={onClick}>
       <div className="card-heading">
-        <span className="icon">{iconMap[job.logo]}</span>
+        <span className="icon">
+          {/* {iconMap[job.logo]} */}
+          {job.logoUrl ? (
+            <img
+              src={job.logoUrl}
+              alt={job.company_name}
+              className="company-logo"
+              onError={(e) => (e.target.src = "/default-logo.png")} // fallback if logo fails
+            />
+          ) : (
+            <img src="/default-logo.png" alt="default" className="company-logo" />
+          )}
+          </span>
         <div>
       <p className="company">{job.company_name}</p>
       <p className="role">{job.job_title}</p>

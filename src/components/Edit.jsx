@@ -3,7 +3,7 @@ import { useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../services/firebase";
 import "../styles/Edit.css";
-export default function Edit({section}) {
+export default function Edit({ section }) {
   const [jobDetails, setJobDetails] = useState({
     company_name: "",
     job_title: "",
@@ -11,7 +11,6 @@ export default function Edit({section}) {
     status: "",
     date: "",
   });
-  // const [errors, setErrors] = useState({});
   const [status, setStatus] = useState("idle");
 
   const handleChange = (e) => {
@@ -30,11 +29,29 @@ export default function Edit({section}) {
         "0"
       )}/${String(date.getDate()).padStart(2, "0")}/${date.getFullYear()}`;
       setStatus("submitting");
+      let logoUrl = "";
+      try {
+        const response = await fetch(
+          `https://logo.clearbit.com/${jobDetails.company_name
+            .replace(/\s+/g, "")
+            .toLowerCase()}.com`
+        );
+        if (response.ok) {
+          logoUrl = response.url;
+        } else {
+          logoUrl = "/default-logo.png";
+        }
+      } catch (err) {
+        console.error("Logo fetch failed:", err);
+        logoUrl = "/default-logo.png";
+      }
+
       // Simulate async submit (replace with your API call)
       await addDoc(collection(db, "job"), {
         ...jobDetails,
         status: section,
         date: formattedDate,
+        logoUrl,
       });
       setStatus("success");
       // Reset form
@@ -84,7 +101,6 @@ export default function Edit({section}) {
         />
         <div className="form-actions">
           <button type="submit" disabled={status === jobDetails.status}>
-            {/* {status === "submitting" ? "Sending…" : "Send Message"} */}
             Submit
           </button>
           {status === "success" && (

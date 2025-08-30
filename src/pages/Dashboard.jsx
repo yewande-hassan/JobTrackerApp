@@ -9,7 +9,6 @@ import { useAuth } from "../context/AuthContext";
 import Edit from "../components/Edit";
 import { collection, getDocs, QuerySnapshot, } from "firebase/firestore";
 import { db } from "../services/firebase";
-import Test from "../components/Test";
 const sections = ["Saved", "Applied", "Interview", "Offer"];
 
 function Dashboard() {
@@ -61,12 +60,9 @@ function Dashboard() {
           <Edit
           section={showEdit}
           />
-       
         ) : (
           <>
-          
             <div className="top-header">
-              
               <h2>Welcome back {username} 👋🏼</h2>
               <p>
                 Track your application, follow up on your opportunities and land
