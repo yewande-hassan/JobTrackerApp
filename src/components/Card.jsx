@@ -1,14 +1,17 @@
 
 import "../styles/Card.css"
+import { forwardRef } from "react";
 
-function Card({job,onClick}) {
+const Card = forwardRef(({ job, onClick, ...dragProps }, ref) => {
 
   return (
       <>
-       <div className="card" onClick={onClick}>
+       <div className="card" 
+       onClick={onClick}
+       ref={ref}
+      {...dragProps}>
       <div className="card-heading">
         <span className="icon">
-          {/* {iconMap[job.logo]} */}
           {job.logoUrl ? (
             <img
               src={job.logoUrl}
@@ -20,7 +23,7 @@ function Card({job,onClick}) {
             <img src="/default-logo.png" alt="default" className="company-logo" />
           )}
           </span>
-        <div>
+        <div className="job-info">
       <p className="company">{job.company_name}</p>
       <p className="role">{job.job_title}</p>
       <p className="date">{job.date}</p>
@@ -33,7 +36,7 @@ function Card({job,onClick}) {
 
     </div>
       </>
-  )
-}
+  );
+});
 
-export default Card
+export default Card;
