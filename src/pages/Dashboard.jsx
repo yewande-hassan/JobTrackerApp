@@ -53,7 +53,6 @@ function Dashboard() {
       setJobs(newData);
     });
   };
-
   useEffect(() => {
     fetchJobs();
   }, []);
@@ -71,7 +70,6 @@ function Dashboard() {
         job.id === draggableId ? { ...job, status: newStatus } : job
       )
     );
-
     // Update Firestore
     const jobRef = doc(db, "job", draggableId);
     await updateDoc(jobRef, { status: newStatus });
@@ -81,7 +79,7 @@ function Dashboard() {
       <Navbar />
       <div className="dashboard-container">
         {showEdit ? (
-          <Edit section={showEdit} />
+          <Edit section={showEdit} onCancel={() => setShowEdit(null)} />
         ) : (
           <>
             <div className="top-header">
@@ -96,14 +94,14 @@ function Dashboard() {
                 {sections.map((section) => {
                   const filtered = jobs.filter((job) => job.status === section);
                   return (
-                 <Droppable droppableId={section} key={section}>
-  {(provided) => (
-    <div
-      key={section}
-      className="section-column"
-      ref={provided.innerRef}
-      {...provided.droppableProps}
-    >
+                    <Droppable droppableId={section} key={section}>
+                      {(provided) => (
+                        <div
+                          key={section}
+                          className="section-column"
+                          ref={provided.innerRef}
+                          {...provided.droppableProps}
+                        >
                           <div className="section-header">
                             <div className="part">
                               <img

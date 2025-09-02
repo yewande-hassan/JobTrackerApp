@@ -2,17 +2,26 @@ import React from "react";
 import { useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../services/firebase";
-import "../styles/Edit.css";
-export default function Edit({ section }) {
+import { IoIosArrowBack } from "react-icons/io";
+import "../styles/Edit.css"; 
+
+export default function Edit({ section,onCancel }) {
   const [jobDetails, setJobDetails] = useState({
     company_name: "",
-    job_title: "",
-    job_url: "",
-    status: "",
-    date: "",
+  job_title: "",
+  job_url: "",
+  work_mode:"",
+  source:"",
+  job_type:"",
+  salary_range: "",
+  country: "",
+  state: "",
+  city: "",
+  status: "",
+  date: "",
+  notes:""
   });
   const [status, setStatus] = useState("idle");
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setJobDetails((prev) => ({
@@ -69,10 +78,13 @@ export default function Edit({ section }) {
   }
   return (
     <>
+    <p onClick={onCancel}><IoIosArrowBack /> Go back</p>
       <h3>{section} Jobs</h3>
-      <p>Please fill in the input below</p>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="job_title">Job Title</label>
+      <p>Please fill in the input field below</p>
+      <div className="form-container">
+      <form className = "job-form" onSubmit={handleSubmit}>
+          <div className="form-group">
+         <label htmlFor="job_title">Job Title</label>
         <input
           id="job_title"
           type="text"
@@ -81,7 +93,9 @@ export default function Edit({ section }) {
           value={jobDetails.job_title}
           onChange={handleChange}
         />
-        <label htmlFor="company_name">Company Name</label>
+          </div>
+        <div className="form-group">
+           <label htmlFor="company_name">Company Name</label>
         <input
           id="company_name"
           type="text"
@@ -90,6 +104,77 @@ export default function Edit({ section }) {
           value={jobDetails.company_name}
           onChange={handleChange}
         />
+        </div>
+       <div className="form-group">
+        <label htmlFor="job_location">Job Location (Optional)</label>
+        <div className="location">
+        <input
+          id="job_location"
+          type="text"
+          placeholder="Enter Country"
+          name="job_location"
+          value={jobDetails.country}
+          onChange={handleChange}
+        />
+         <input
+          id="job_location"
+          type="text"
+          placeholder="Enter State"
+          name="job_location"
+          value={jobDetails.state}
+          onChange={handleChange}
+        />
+        <input
+          id="job_location"
+          type="text"
+          placeholder="Enter City"
+          name="job_location"
+          value={jobDetails.city}
+          onChange={handleChange}
+        />
+        </div>
+        </div>
+          <div className="form-row">
+    <div className="form-group half">
+      <label htmlFor="work_mode">Work Mode</label>
+      <select
+        id="work_mode"
+        name="work_mode"
+        value={jobDetails.work_mode}
+        onChange={handleChange}
+      >
+        <option value="Remote">Remote</option>
+        <option value="Hybrid">Hybrid</option>
+        <option value="Onsite">Onsite</option>
+      </select>
+    </div>
+    <div className="form-group half">
+      <label htmlFor="source">Source</label>
+      <input
+        id="source"
+        type="text"
+        placeholder="Enter source"
+        name="source"
+        value={jobDetails.source}
+        onChange={handleChange}
+      />
+    </div>
+  </div>
+        <div className="form-group">
+            <div className="form-group">
+    <label htmlFor="job_type">Job Type</label>
+    <select
+      id="job_type"
+      name="job_type"
+      value={jobDetails.job_type}
+      onChange={handleChange}
+    >
+      <option value="Full time">Full time</option>
+      <option value="Part time">Part time</option>
+      <option value="Contract">Contract</option>
+      <option value="Internship">Internship</option>
+    </select>
+  </div>
         <label htmlFor="job_url">Job Posting Link</label>
         <input
           id="job_url"
@@ -99,9 +184,34 @@ export default function Edit({ section }) {
           value={jobDetails.job_url}
           onChange={handleChange}
         />
+        </div>
+        <div className="form-group">
+        <label htmlFor="salary_range">Salary Range (Optional)</label>
+        <input
+          id="salary_range"
+          type="text"
+          placeholder="Enter desired Salary"
+          name="salary_range"
+          value={jobDetails.job_url}
+          onChange={handleChange}
+        />
+        </div>
+          <div className="form-group">
+    <label htmlFor="notes">Notes</label>
+    <textarea
+      id="notes"
+      placeholder="Enter"
+      name="notes"
+      value={jobDetails.notes}
+      onChange={handleChange}
+    />
+  </div>
+            <button type="button" onClick={onCancel}>
+            Cancel
+          </button>
         <div className="form-actions">
           <button type="submit" disabled={status === jobDetails.status}>
-            Submit
+            Save
           </button>
           {status === "success" && (
             <div className="mt-3 text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg p-3">
@@ -113,11 +223,9 @@ export default function Edit({ section }) {
               Oops, something went wrong. Please try again.
             </div>
           )}
-          {/* <button type="button" onClick={onClose}>
-            Cancel
-          </button> */}
         </div>
       </form>
+      </div>
     </>
   );
 }

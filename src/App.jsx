@@ -6,6 +6,7 @@ import Setting from './pages/Setting'
 import Connection from './pages/Connection'
 import Report from './pages/Report'
 import Signup from './pages/authPages/Signup'
+import Edit from './components/Edit'
 
 
 
@@ -20,6 +21,7 @@ function App() {
         <Route exact path="/sign-up" element={<Signup/>}/>
         {/* Protected route */}
       <Route path="/dashboard" element={<Dashboard/>}/>
+      <Route path="/dashboard/new/:section" element={<Edit />} />
       <Route path="/setting" element={<Setting/>}/>
       <Route path="/report" element={<Report/>}/>
       <Route path="/connection" element={<Connection/>}/>

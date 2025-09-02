@@ -53,16 +53,3 @@ position: relative;
 width: 55%;
 max-width: 300px;
 }
-input{
-    max-width: 50%;
-    border-radius: 2px;
-    -webkit-border-radius: 2px;
-    -moz-border-radius: 2px;
-    -ms-border-radius: 2px;
-    -o-border-radius: 2px;
-}
-/* .search-icon{
-    position: absolute;
-    top:40%;
-    left: 13rem;
-} */
