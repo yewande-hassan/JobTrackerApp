@@ -7,14 +7,7 @@ import "../styles/Dashboard.css";
 import { FaPlus } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
 import Edit from "../components/Edit";
-import {
-  collection,
-  getDocs,
-  QuerySnapshot,
-  doc,
-  updateDoc,
-} from "firebase/firestore";
-import { db } from "../services/firebase";
+import { db, query, where, collection, getDocs,doc,updateDoc} from "../services/firebase";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 const sections = ["Saved", "Applied", "Interview", "Offer"];
 
@@ -45,17 +38,22 @@ function Dashboard() {
     .replace(/^./, (c) => c.toUpperCase());
 
   const fetchJobs = async () => {
-    await getDocs(collection(db, "job")).then((QuerySnapshot) => {
-      const newData = QuerySnapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
-      setJobs(newData);
-    });
+    if (!currentUser) return;
+    const jobsRef = collection(db, "job");
+    const q = query(jobsRef, where("userId", "==", currentUser.uid));
+    const querySnapshot = await getDocs(q);
+    const newData = querySnapshot.docs.map((doc) => ({
+      ...doc.data(),
+      id: doc.id,
+    }));
+    setJobs(newData);
   };
+
   useEffect(() => {
-    fetchJobs();
-  }, []);
+    if (currentUser) {
+      fetchJobs();
+    }
+  }, [currentUser]);
 
   // Handle drag and drop
   const handleDragEnd = async (result) => {
@@ -79,7 +77,11 @@ function Dashboard() {
       <Navbar />
       <div className="dashboard-container">
         {showEdit ? (
-          <Edit section={showEdit} onCancel={() => setShowEdit(null)} />
+          <Edit
+            section={showEdit}
+            onCancel={() => setShowEdit(null)}
+            onJobAdded={fetchJobs}
+          />
         ) : (
           <>
             <div className="top-header">

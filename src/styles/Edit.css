@@ -13,11 +13,11 @@
 .job-form{
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
 }
 .form-group{
 display: flex;
-  flex-direction: column;
+flex-direction: column;
 }
 .location{
     display: flex;
@@ -42,4 +42,25 @@ display: flex;
 }
 .form-row .half {
   flex: 1;
+}
+
+.btns{
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  /* width:100%; */
+}
+.btn-edit{
+  color:#8aaef2;
+  background-color: transparent;
+  border: 0.5px solid #8aaef2;
+  width:20%;
+  padding: 10px 20px;
+  border-radius: 6px;
+  
+}
+.btn-edit:hover{
+  color: #fff;
+  background-color: #8aaef2;
+  
 }
