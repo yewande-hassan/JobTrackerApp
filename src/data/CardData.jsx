@@ -78,7 +78,7 @@ export const sectionConfig = {
   },
   Interview: {
     icon: "/upcoming-interview.png",
-    label: "Interview Jobs",
+    label: "Upcoming Interviews",
   },
   Offer: {
     icon: "/offer.png",
