@@ -1,3 +1,26 @@
 .connection-container{
     background-color: #101828;
+    text-align: start;
+    padding: 52px;
+}
+.connection-header{
+    display: flex;
+    justify-content: space-between;
+}
+.btn-connection{
+display: flex;
+gap: 10px;
+align-items: center;
+color:#8aaef2;
+background-color: transparent;
+border: 0.5px solid #8aaef2;
+padding: 0 20px;
+border-radius: 6px;
+}
+.btn-connection:hover{
+color: #fff;
+background-color: #8aaef2;
+}
+.text{
+    width: 30%;
 }

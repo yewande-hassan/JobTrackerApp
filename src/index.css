@@ -9,6 +9,8 @@
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   /* color:#fff; */
+  overflow: scroll;
+  overflow-x: hidden;
   background-color: #fff;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -21,6 +23,7 @@ body {
   display: flex;
   place-items: center;
   min-width: 320px;
+  /* height: 100%; */
   min-height: 100vh;
 } 
 

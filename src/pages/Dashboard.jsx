@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Card from "../components/Card";
 import Navbar from "../components/Navbar";
 import Modal from "../components/Modal";
-import { CardData, sectionConfig } from "../data/CardData";
+import {sectionConfig } from "../data/CardData";
 import "../styles/Dashboard.css";
 import { FaPlus } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";

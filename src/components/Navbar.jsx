@@ -10,7 +10,7 @@ function Navbar() {
     <h1 className="logo-icon">Track<span className="home">MyJob</span></h1>
         <div className="nav-links">
         <Link to="/dashboard" className="nav-link">Board</Link>
-        <Link to="connection" className="nav-link">Connections</Link>
+        <Link to="/connection" className="nav-link">Connections</Link>
         <Link to="/report" className="nav-link">Report</Link>
         <Link to="/setting" className="nav-link">Settings</Link>
         </div>
