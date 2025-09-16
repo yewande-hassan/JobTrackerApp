@@ -42,15 +42,14 @@ export default function InterviewJobsForm({ jobDetails, handleChange }) {
       </div>
       <div className="form-group">
         <label htmlFor="location_link">Location/Meeting Link</label>
-        <select
-          id="location_link"
-          name="location_link"
-          value={jobDetails.location_link}
-          onChange={handleChange}
-        >
-          <option value="virtual">Virtual</option>
-          <option value="In Person">In Person</option>
-        </select>
+            <input
+            id="location_link"
+            type="text"
+            placeholder="Enter Location/ Meeting Link"
+            name="location_link"
+            value={jobDetails.location_link || ""}
+            onChange={handleChange}
+          />
       </div>
       <div className="form-group">
         <label htmlFor="status">Status</label>

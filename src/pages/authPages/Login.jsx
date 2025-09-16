@@ -64,7 +64,7 @@ function Login() {
             </div>
             <div className="right-container">
                 <div className="bg-blur"></div>
-                <img src="/public/log-in.jpg" alt="testing" className="bg-img-login"/>
+                <img src="/log-in.jpg" alt="testing" className="bg-img-login"/>
             </div>
         </div>
     </>

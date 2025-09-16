@@ -37,7 +37,7 @@ flex-direction: column;
 }
 .form-row {
   display: flex;
-  gap: 20px;
+  gap: 50px;
   align-items: center;
 }
 .form-row .half {

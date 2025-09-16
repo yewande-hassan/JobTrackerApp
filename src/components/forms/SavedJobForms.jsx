@@ -46,16 +46,20 @@ export default function SavedJobForm({ jobDetails, handleChange }) {
             <option value="Onsite">Onsite</option>
           </select>
         </div>
-        <div className="form-group half">
+          <div className="form-group half">
           <label htmlFor="source">Source</label>
-          <input
+          <select
             id="source"
-            type="text"
-            placeholder="Enter source"
             name="source"
             value={jobDetails.source}
             onChange={handleChange}
-          />
+          >
+            <option value="LinkedIn">LinkedIn</option>
+            <option value="Indeed">Indeed</option>
+            <option value="Glassdoor">Glassdoor</option>
+            <option value="Career Fair">Career Fair</option>
+            <option value="SimplyHired">SimplyHired</option>
+          </select>
         </div>
       </div>
       <div className="form-group">

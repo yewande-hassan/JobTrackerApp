@@ -3,6 +3,11 @@
     text-align: start;
     padding: 52px;
 }
+.heading{
+    font-size: 32px;
+    color: #fff;
+    font-weight: 600;
+}
 .connection-header{
     display: flex;
     justify-content: space-between;
@@ -22,5 +27,6 @@ color: #fff;
 background-color: #8aaef2;
 }
 .text{
+    margin: 10px 0;
     width: 30%;
 }

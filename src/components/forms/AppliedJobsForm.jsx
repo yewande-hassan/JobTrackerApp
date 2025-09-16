@@ -109,20 +109,24 @@ export default function AppliedJobsForm({ jobDetails, handleChange }) {
            <input
               id="resume"
               type="file"
-              placeholder="Enter"
               name="resume"
-              value={jobDetails.resume}
+              accept=".pdf,.doc,.docx"
               onChange={handleChange}
             />
+            {/* {jobDetails.resume && (
+  <a href={jobDetails.resume} target="_blank" rel="noopener noreferrer">
+    View Resume
+  </a>
+)} */}
           </div>
              <div className="form-group">
-            <label htmlFor="cover_letter">Cover Letter</label>
+            <label htmlFor="cover_letter">Cover Letter (Optional) </label>
             <input
               id="cover_letter"
               type="file"
-              placeholder="Enter"
               name="cover_letter"
-              value={jobDetails.cover_letter}
+              
+              accept=".pdf,.doc,.docx"
               onChange={handleChange}
             />
           </div>

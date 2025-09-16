@@ -11,7 +11,7 @@ function Connection() {
       <Navbar />
       <div className="connection-container">
         <div className="connection-header">
-          <h2>Networking Tracker</h2>
+          <p className="heading">Networking Tracker</p>
           <button type="button" className="btn-connection">
             <FaPlus className="plus-btn" />
             New Connection

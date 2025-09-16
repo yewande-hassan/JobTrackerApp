@@ -1,4 +1,11 @@
 .report-container{
     background-color: #101828;
-    color: #fff;
+    text-align: start;
+    padding: 52px;
+}
+.report-header{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: space-between;
 }

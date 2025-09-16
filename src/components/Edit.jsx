@@ -7,12 +7,14 @@ import AppliedJobForm from "../components/forms/AppliedJobsForm";
 import InterviewJobForm from "../components/forms/InterviewJobsForm";
 import OfferJobForm from "../components/forms/OfferJobsForm";
 
+
 import "../styles/Edit.css";
 
 export default function Edit({ section, onCancel, onJobAdded }) {
   const { currentUser } = useAuth();
   const [jobDetails, setJobDetails] = useState({});
   const [status, setStatus] = useState("idle");
+
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -23,6 +25,7 @@ export default function Edit({ section, onCancel, onJobAdded }) {
   };
 
   async function handleSubmit(e) {
+    
     e.preventDefault();
     try {
       setStatus("submitting");
@@ -30,6 +33,7 @@ export default function Edit({ section, onCancel, onJobAdded }) {
       setStatus("success");
       setJobDetails({});
       if (onJobAdded) onJobAdded();
+      onCancel()
     } catch (err) {
       console.error(err);
       setStatus("error");

@@ -7,7 +7,8 @@ import {
   collection, 
   getDocs, 
   doc, 
-  updateDoc 
+  updateDoc,
+  addDoc,
 } from "firebase/firestore";
 import { getDatabase } from "firebase/database";
 import { getStorage } from "firebase/storage";
@@ -28,4 +29,4 @@ export { app, auth };
 export const db = getFirestore(app);
 export const rtdb = getDatabase(app);
 export const storage = getStorage(app);
-export { query, where, collection, getDocs, doc, updateDoc };
+export { query, where, collection, getDocs, doc, updateDoc,addDoc };
