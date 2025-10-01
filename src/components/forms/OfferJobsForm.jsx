@@ -13,6 +13,7 @@ export default function OfferJobsForm({ jobDetails, handleChange }) {
         >
           <option value="">Select role type</option>
           <option value="full_time">Full time</option>
+          <option value="part_time">Part time</option>
           <option value="contract">Contract</option>
           <option value="internship">Internship</option>
         </select>
@@ -73,6 +74,21 @@ export default function OfferJobsForm({ jobDetails, handleChange }) {
           onChange={handleChange}
         />
       </div>
+            {/* <div className="form-group">
+        <label htmlFor="offer_status">Status</label>
+        <select
+          id="offer_status"
+          name="offeredRole_type"
+          value={jobDetails.offeredRole_type || ""}
+          onChange={handleChange}
+        >
+          <option value="">Select role type</option>
+          <option value="full_time">Full time</option>
+          <option value="part_time">Part time</option>
+          <option value="contract">Contract</option>
+          <option value="internship">Internship</option>
+        </select>
+      </div> */}
     </>
   );
 }

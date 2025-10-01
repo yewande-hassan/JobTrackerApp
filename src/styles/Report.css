@@ -9,3 +9,9 @@
     gap: 10px;
     justify-content: space-between;
 }
+.metrics{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 20px;
+}
