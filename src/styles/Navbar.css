@@ -35,6 +35,10 @@
   height: 2px;
   background-color: #fff;
   transition: width 0.3s ease;
+  -webkit-transform: translateX(-50%);
+  -moz-transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
+  -o-transform: translateX(-50%);
 }
 .nav-link:hover{
     color:#fff;

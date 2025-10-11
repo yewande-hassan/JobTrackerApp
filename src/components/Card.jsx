@@ -1,7 +1,26 @@
 import "../styles/Card.css";
-import { forwardRef } from "react";
+import { forwardRef, useEffect, useState } from "react";
+import { getJobResumeMatch } from "../services/jobServices";
 
-const Card = forwardRef(({ job, onClick, ...dragProps }, ref) => {
+
+const Card = forwardRef(({ job, resumeText, onClick, ...dragProps }, ref) => {
+  const [match, setMatch] = useState(null);
+
+  useEffect(() => {
+    async function fetchMatch() {
+      try {
+        // Use job.description and resumeText for matching
+        const score = await getJobResumeMatch(job.description || job.job_title, resumeText || "");
+        console.log("Match score:", score);
+        setMatch(score);
+      } catch (err) {
+        console.error("Match error:", err);
+        setMatch("-"); // fallback if error
+      }
+    }
+    fetchMatch();
+  }, [job.description, job.job_title, resumeText]);
+
   return (
     <>
       <div className="card" onClick={onClick} ref={ref} {...dragProps}>
@@ -12,7 +31,7 @@ const Card = forwardRef(({ job, onClick, ...dragProps }, ref) => {
                 src={job.logoUrl}
                 alt={job.company_name}
                 className="company-logo"
-                onError={(e) => (e.target.src = "/default-logo.png")} // fallback if logo fails
+                onError={(e) => (e.target.src = "/default-logo.png")}
               />
             ) : (
               <img
@@ -28,7 +47,9 @@ const Card = forwardRef(({ job, onClick, ...dragProps }, ref) => {
             <p className="date">{job.date}</p>
           </div>
           <div>
-            <p className="match">86% Match</p>
+            <p className="match">
+              {match !== null ? `${match}% Match` : "Checking match..."}
+            </p>
           </div>
         </div>
       </div>

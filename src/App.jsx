@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard'
 import Setting from './pages/Setting'
 import Connection from './pages/Connection'
 import Report from './pages/Report'
+import Profile from './pages/Profile'
 import Signup from './pages/authPages/Signup'
 import Edit from './components/Edit'
 
@@ -25,6 +26,7 @@ function App() {
       <Route path="/setting" element={<Setting/>}/>
       <Route path="/report" element={<Report/>}/>
       <Route path="/connection" element={<Connection/>}/>
+      <Route path="/profile" element={<Profile/>}/>
       </Routes>
     </Router>
   )

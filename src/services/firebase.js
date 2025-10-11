@@ -6,6 +6,7 @@ import {
   where, 
   collection, 
   getDocs, 
+  getDoc,
   doc, 
   updateDoc,
   addDoc,
@@ -29,4 +30,4 @@ export { app, auth };
 export const db = getFirestore(app);
 export const rtdb = getDatabase(app);
 export const storage = getStorage(app);
-export { query, where, collection, getDocs, doc, updateDoc,addDoc };
+export { query, where, collection, getDocs,getDoc, doc, updateDoc,addDoc };

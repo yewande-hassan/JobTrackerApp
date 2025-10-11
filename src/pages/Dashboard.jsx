@@ -7,7 +7,7 @@ import "../styles/Dashboard.css";
 import { FaPlus } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
 import Edit from "../components/Edit";
-import { db, query, where, collection, getDocs,doc,updateDoc} from "../services/firebase";
+import { db, query, where, collection,getDocs,doc,updateDoc, getDoc } from "../services/firebase";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 const sections = ["Saved", "Applied", "Interview", "Offer"];
 
@@ -16,7 +16,20 @@ function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showEdit, setShowEdit] = useState(null);
   const [jobs, setJobs] = useState([]);
+  const [profileResumeText, setProfileResumeText] = useState("");
   const { currentUser } = useAuth();
+
+  useEffect(() => {
+    async function fetchProfileResume() {
+      if (!currentUser) return;
+      const userRef = doc(db, "users", currentUser.uid);
+      const snap = await getDoc(userRef);
+      if (snap.exists() && snap.data().resumeText) {
+        setProfileResumeText(snap.data().resumeText);
+      }
+    }
+    fetchProfileResume();
+  }, [currentUser]);
 
   const handleCardClick = (job) => {
     setSelectedJob(job);
@@ -124,6 +137,7 @@ function Dashboard() {
                               {(provided) => (
                                 <Card
                                   job={job}
+                                  resumeText={job.resumeText || profileResumeText}
                                   onClick={() => handleCardClick(job)}
                                   ref={provided.innerRef}
                                   {...provided.draggableProps}

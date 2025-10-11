@@ -1,9 +1,19 @@
 import React from "react";
 
 export default function AppliedJobsForm({ jobDetails, handleChange }) {
+  // Custom handler for file inputs
+  function handleFileChange(e) {
+    const { name, files } = e.target;
+    handleChange({
+      target: {
+        name,
+        value: files && files[0] ? files[0] : null
+      }
+    });
+  }
   return (
     <>
-          <div className="form-group">
+      <div className="form-group">
         <label htmlFor="job_location">Job Location (Optional)</label>
         <div className="location">
           <input
@@ -58,7 +68,7 @@ export default function AppliedJobsForm({ jobDetails, handleChange }) {
           />
         </div>
       </div>
-            <div className="form-group">
+      <div className="form-group">
         <label htmlFor="job_url">Job Posting Link</label>
         <input
           id="job_url"
@@ -104,32 +114,26 @@ export default function AppliedJobsForm({ jobDetails, handleChange }) {
           onChange={handleChange}
         />
       </div>
-          <div className="form-group">
-          <label htmlFor="resume">Resume Used</label>
-           <input
-              id="resume"
-              type="file"
-              name="resume"
-              accept=".pdf,.doc,.docx"
-              onChange={handleChange}
-            />
-            {/* {jobDetails.resume && (
-  <a href={jobDetails.resume} target="_blank" rel="noopener noreferrer">
-    View Resume
-  </a>
-)} */}
-          </div>
-             <div className="form-group">
-            <label htmlFor="cover_letter">Cover Letter (Optional) </label>
-            <input
-              id="cover_letter"
-              type="file"
-              name="cover_letter"
-              
-              accept=".pdf,.doc,.docx"
-              onChange={handleChange}
-            />
-          </div>
+      <div className="form-group">
+        <label htmlFor="resume">Resume Used</label>
+        <input
+          id="resume"
+          type="file"
+          name="resume"
+          accept=".pdf,.doc,.docx"
+          onChange={handleFileChange}
+        />
+      </div>
+      <div className="form-group">
+        <label htmlFor="cover_letter">Cover Letter (Optional) </label>
+        <input
+          id="cover_letter"
+          type="file"
+          name="cover_letter"
+          accept=".pdf,.doc,.docx"
+          onChange={handleFileChange}
+        />
+      </div>
     </>
   );
 }
