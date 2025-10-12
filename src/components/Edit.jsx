@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 import { useAuth } from "../context/AuthContext";
 import { addJob } from "../services/jobServices";
@@ -9,11 +9,14 @@ import OfferJobForm from "../components/forms/OfferJobsForm";
 
 
 import "../styles/Edit.css";
+import { db } from "../services/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 export default function Edit({ section, onCancel, onJobAdded }) {
   const { currentUser } = useAuth();
   const [jobDetails, setJobDetails] = useState({});
   const [status, setStatus] = useState("idle");
+  const [profileResume, setProfileResume] = useState({ text: "", url: "", fileName: "" });
 
 
   const handleChange = (e) => {
@@ -24,12 +27,40 @@ export default function Edit({ section, onCancel, onJobAdded }) {
     }));
   };
 
+  // Prefill applied form with profile resume metadata for convenience
+  useEffect(() => {
+    async function loadProfileResume() {
+      if (!currentUser) return;
+      try {
+        const userRef = doc(db, "users", currentUser.uid);
+        const snap = await getDoc(userRef);
+        if (snap.exists()) {
+          const d = snap.data();
+          setProfileResume({
+            text: d?.resumeText || "",
+            url: d?.resumeUrl || "",
+            fileName: d?.resumeFileName || "",
+          });
+        }
+      } catch (e) {
+        console.warn("Failed to load profile resume:", e?.message || e);
+      }
+    }
+    loadProfileResume();
+  }, [currentUser]);
+
   async function handleSubmit(e) {
     
     e.preventDefault();
     try {
       setStatus("submitting");
-      await addJob(jobDetails, section, currentUser);
+      // If user didn't upload a resume file for this job, embed profile resume text
+      // addJob already extracts text if a File is provided; otherwise we pass resumeText explicitly
+      const payload = { ...jobDetails };
+      if (!payload.resume && profileResume.text) {
+        payload.resumeText = profileResume.text;
+      }
+      await addJob(payload, section, currentUser);
       setStatus("success");
       setJobDetails({});
       if (onJobAdded) onJobAdded();

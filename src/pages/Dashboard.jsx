@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Card from "../components/Card";
 import Navbar from "../components/Navbar";
 import Modal from "../components/Modal";
@@ -7,7 +7,7 @@ import "../styles/Dashboard.css";
 import { FaPlus } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
 import Edit from "../components/Edit";
-import { db, query, where, collection,getDocs,doc,updateDoc, getDoc } from "../services/firebase";
+import { db, query, where, collection,getDocs,doc,updateDoc, onSnapshot } from "../services/firebase";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 const sections = ["Saved", "Applied", "Interview", "Offer"];
 
@@ -20,16 +20,20 @@ function Dashboard() {
   const { currentUser } = useAuth();
 
   useEffect(() => {
-    async function fetchProfileResume() {
-      if (!currentUser) return;
-      const userRef = doc(db, "users", currentUser.uid);
-      const snap = await getDoc(userRef);
-      if (snap.exists() && snap.data().resumeText) {
-        setProfileResumeText(snap.data().resumeText);
-      }
+    // Subscribe to the user's profile doc so resumeText updates in real-time
+    if (!currentUser?.uid) {
+      setProfileResumeText("");
+      return;
     }
-    fetchProfileResume();
-  }, [currentUser]);
+
+    const userRef = doc(db, "users", currentUser.uid);
+    const unsubscribe = onSnapshot(userRef, (snap) => {
+      const data = snap.data();
+      setProfileResumeText(data?.resumeText || "");
+    });
+
+    return () => unsubscribe();
+  }, [currentUser?.uid]);
 
   const handleCardClick = (job) => {
     setSelectedJob(job);
@@ -50,7 +54,7 @@ function Dashboard() {
     .split("@")[0]
     .replace(/^./, (c) => c.toUpperCase());
 
-  const fetchJobs = async () => {
+  const fetchJobs = useCallback(async () => {
     if (!currentUser) return;
     const jobsRef = collection(db, "job");
     const q = query(jobsRef, where("userId", "==", currentUser.uid));
@@ -60,13 +64,13 @@ function Dashboard() {
       id: doc.id,
     }));
     setJobs(newData);
-  };
+  }, [currentUser]);
 
   useEffect(() => {
     if (currentUser) {
       fetchJobs();
     }
-  }, [currentUser]);
+  }, [currentUser, fetchJobs]);
 
   // Handle drag and drop
   const handleDragEnd = async (result) => {

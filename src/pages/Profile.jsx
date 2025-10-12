@@ -2,70 +2,48 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import "../styles/Profile.css";
 import { db } from "../services/firebase";
+import { uploadFiles } from "../services/uploadFiles";
 import { useAuth } from "../context/AuthContext";
 import { doc, setDoc, getDoc } from "firebase/firestore";
+import { parseResumeToProfile } from "../services/resumeServices";
+import { extractTextFromFile } from "../services/textExtract";
 import { FaPlus, FaTimes } from "react-icons/fa";
 
 function Profile() {
   const { currentUser } = useAuth();
   const [resumeFile, setResumeFile] = useState(null);
   const [syncing, setSyncing] = useState(false);
+  const [photoPreview, setPhotoPreview] = useState("");
   const [profileData, setProfileData] = useState({
-    fullName: "Connor Jason",
-    email: "Connorjason@gmail.com",
-    phone: "+234 8823 4444 123",
+    fullName: "",
+    email: "",
+    phone: "",
     dateOfBirth: "",
     gender: "",
-    location: "Lagos, Nigeria",
-    linkedin: "Http://linkedin/connorjason",
-    website: "http://connorjason",
+    location: "",
+    linkedin: "",
+    website: "",
     professionalSummary: "",
-    skills: [
-      { name: "JavaScript", level: "Expert" },
-      { name: "Problem-solving", level: "Intermediate" },
-      { name: "Python", level: "Intermediate" },
-      { name: "CSS", level: "Expert" }
-    ],
-    workExperience: [
-      {
-        title: "Frontend Developer",
-        company: "Interswitch",
-        period: "Jan 2022 - Present",
-        location: "Lagos, Nigeria",
-        responsibilities: [
-          "Developed and maintained user-facing features using React.js.",
-          "Collaborated with designers to implement responsive UI/UX designs.",
-          "Build new feature that helps enhance the product and boost users activities in the website"
-        ]
-      }
-    ],
-    education: [
-      {
-        degree: "Bachelor of Science in Computer Science",
-        institution: "University of Lagos",
-        period: "Sept 2018 - June 2022"
-      }
-    ],
-    certifications: [
-      {
-        name: "Certified Scrum Master",
-        issuer: "Scrum Alliance",
-        date: "May 2023"
-      }
-    ],
-    projects: [
-      {
-        name: "Portfolio Website",
-        description: "A personal website showcasing my projects and skills.",
-        technologies: "HTML, CSS, JavaScript",
-        link: "#"
-      }
-    ],
-    languages: [
-      { name: "English", level: "Native" },
-      { name: "French", level: "Basic" }
-    ]
+    // resume-related persisted fields
+    resumeUrl: "",
+    resumeFileName: "",
+    resumeUpdatedAt: "",
+    resumeText: "",
+    skills: [],
+    workExperience: [],
+    education: [],
+    certifications: [],
+    projects: [],
+    languages: []
   });
+
+  // Inline add-form states
+  const [newSkill, setNewSkill] = useState({ name: "", level: "Beginner" });
+  const [newExp, setNewExp] = useState({ title: "", company: "", period: "", location: "", responsibilitiesText: "" });
+  const [newEdu, setNewEdu] = useState({ degree: "", institution: "", period: "" });
+  const [newCert, setNewCert] = useState({ name: "", issuer: "", date: "" });
+  const [newProject, setNewProject] = useState({ name: "", description: "", technologies: "", link: "" });
+  const [newLang, setNewLang] = useState({ name: "", level: "Basic" });
 
   // Load profile data from Firestore
   useEffect(() => {
@@ -76,6 +54,13 @@ function Profile() {
       if (snap.exists()) {
         const data = snap.data();
         setProfileData(prev => ({ ...prev, ...data }));
+      } else if (currentUser) {
+        // Prefill some basics from auth if user doc doesn't exist yet
+        setProfileData(prev => ({
+          ...prev,
+          fullName: currentUser.displayName || "",
+          email: currentUser.email || "",
+        }));
       }
     }
     fetchProfile();
@@ -86,16 +71,53 @@ function Profile() {
     if (!resumeFile || !currentUser) return;
     setSyncing(true);
     try {
-      const text = await resumeFile.text();
-      // Save to Firestore user profile
+      // 1) Upload file to Storage
+      const resumeUrl = await uploadFiles(resumeFile, "resumes");
+  // 2) Extract clean text from file (PDF/DOCX supported)
+  const text = await extractTextFromFile(resumeFile);
+  const nowIso = new Date().toISOString();
+  // If extraction failed, keep previous resumeText instead of overwriting with empty
+  const safeText = text && text.trim() ? text : (profileData.resumeText || "");
+  // Parse resume into profile sections (may be shallow with empty)
+  const parsed = await parseResumeToProfile(safeText);
       const userRef = doc(db, "users", currentUser.uid);
-      await setDoc(userRef, { resumeText: text }, { merge: true });
+      // 3) Save metadata + text + parsed sections to Firestore
+      await setDoc(
+        userRef,
+        {
+          resumeUrl: resumeUrl || "",
+          resumeFileName: resumeFile.name,
+          resumeUpdatedAt: nowIso,
+          resumeText: safeText,
+          // Merge parsed structured fields
+          ...parsed,
+        },
+        { merge: true }
+      );
+      // 4) Reflect in local state so it persists in UI after reload
+      setProfileData((prev) => ({
+        ...prev,
+        resumeUrl: resumeUrl || "",
+        resumeFileName: resumeFile.name,
+        resumeUpdatedAt: nowIso,
+  resumeText: safeText,
+        ...parsed,
+      }));
       alert("Resume synced to profile!");
     } catch (error) {
       console.error("Failed to sync resume:", error);
       alert("Failed to sync resume.");
     }
     setSyncing(false);
+  }
+
+  // Handle photo change (local preview only)
+  function handlePhotoChange(e) {
+    const file = e.target.files && e.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setPhotoPreview(url);
+    }
   }
 
   const handleInputChange = (field, value) => {
@@ -106,14 +128,9 @@ function Profile() {
   };
 
   const addSkill = () => {
-    const skillName = prompt("Enter skill name:");
-    const skillLevel = prompt("Enter skill level (Beginner/Intermediate/Expert):");
-    if (skillName && skillLevel) {
-      setProfileData(prev => ({
-        ...prev,
-        skills: [...prev.skills, { name: skillName, level: skillLevel }]
-      }));
-    }
+    if (!newSkill.name) return;
+    setProfileData(prev => ({ ...prev, skills: [...prev.skills, newSkill] }));
+    setNewSkill({ name: "", level: "Beginner" });
   };
 
   const removeSkill = (index) => {
@@ -121,6 +138,69 @@ function Profile() {
       ...prev,
       skills: prev.skills.filter((_, i) => i !== index)
     }));
+  };
+
+  // Experience
+  const addExperience = () => {
+    if (!newExp.title || !newExp.company) return;
+    const responsibilities = newExp.responsibilitiesText
+      ? newExp.responsibilitiesText.split("\n").map(s => s.trim()).filter(Boolean)
+      : [];
+    const item = { title: newExp.title, company: newExp.company, period: newExp.period, location: newExp.location, responsibilities };
+    setProfileData(prev => ({ ...prev, workExperience: [...prev.workExperience, item] }));
+    setNewExp({ title: "", company: "", period: "", location: "", responsibilitiesText: "" });
+  };
+  const removeExperience = (index) => {
+    setProfileData(prev => ({ ...prev, workExperience: prev.workExperience.filter((_, i) => i !== index) }));
+  };
+
+  // Education
+  const addEducation = () => {
+    if (!newEdu.degree || !newEdu.institution) return;
+    setProfileData(prev => ({ ...prev, education: [...prev.education, newEdu] }));
+    setNewEdu({ degree: "", institution: "", period: "" });
+  };
+  const removeEducation = (index) => {
+    setProfileData(prev => ({ ...prev, education: prev.education.filter((_, i) => i !== index) }));
+  };
+
+  // Certifications
+  const addCertification = () => {
+    if (!newCert.name) return;
+    setProfileData(prev => ({ ...prev, certifications: [...prev.certifications, newCert] }));
+    setNewCert({ name: "", issuer: "", date: "" });
+  };
+  const removeCertification = (index) => {
+    setProfileData(prev => ({ ...prev, certifications: prev.certifications.filter((_, i) => i !== index) }));
+  };
+
+  // Projects
+  const addProject = () => {
+    if (!newProject.name) return;
+    setProfileData(prev => ({ ...prev, projects: [...prev.projects, newProject] }));
+    setNewProject({ name: "", description: "", technologies: "", link: "" });
+  };
+  const removeProject = (index) => {
+    setProfileData(prev => ({ ...prev, projects: prev.projects.filter((_, i) => i !== index) }));
+  };
+
+  // Languages
+  const addLanguage = () => {
+    if (!newLang.name) return;
+    setProfileData(prev => ({ ...prev, languages: [...prev.languages, newLang] }));
+    setNewLang({ name: "", level: "Basic" });
+  };
+  const removeLanguage = (index) => {
+    setProfileData(prev => ({ ...prev, languages: prev.languages.filter((_, i) => i !== index) }));
+  };
+
+  const getInitials = (name, email) => {
+    const cleaned = (name || "").trim();
+    if (cleaned.length) {
+      const parts = cleaned.split(/\s+/).slice(0, 2);
+      return parts.map(p => p[0]?.toUpperCase() || "").join("") || "?";
+    }
+    return (email?.[0] || "?").toUpperCase();
   };
 
   const saveProfile = async () => {
@@ -156,16 +236,24 @@ function Profile() {
         <div className="profile-main-section">
           {/* Profile Photo Section */}
           <div className="profile-photo-card">
+            <input
+              id="photo-upload"
+              type="file"
+              accept="image/*"
+              onChange={handlePhotoChange}
+              style={{ display: 'none' }}
+            />
             <div className="profile-photo">
-              {/* This could be an img tag if you have a photo URL */}
-              <div className="default-avatar">
-                <span className="avatar-initials">
-                  {profileData.fullName.split(' ').map(n => n[0]).join('').toUpperCase()}
-                </span>
-              </div>
+              {(photoPreview || profileData.photoUrl) ? (
+                <img src={photoPreview || profileData.photoUrl} alt="Profile" />
+              ) : (
+                <div className="default-avatar">
+                  <span className="avatar-initials">{getInitials(profileData.fullName, profileData.email)}</span>
+                </div>
+              )}
             </div>
             <h3 className="profile-name">{profileData.fullName}</h3>
-            <button className="change-photo-btn">Change Photo</button>
+            <label htmlFor="photo-upload" className="change-photo-btn">Change Photo</label>
           </div>
           
           {/* Resume Section */}
@@ -184,12 +272,13 @@ function Profile() {
                   Choose File
                 </label>
                 <span className="file-status">
-                  {resumeFile ? resumeFile.name : "No file choosen"}
+                  {resumeFile ? resumeFile.name : (profileData.resumeFileName || "No file chosen")}
                 </span>
               </div>
               <p className="resume-description">
                 Upload your resume (PDF/DOC) with size not more than 2.00MB, to automatically fill in your profile.
               </p>
+              {/* Intentionally hiding last sync/link/preview per request */}
             </div>
             <button
               className="sync-resume-btn"
@@ -323,9 +412,17 @@ function Profile() {
               </div>
             ))}
           </div>
-          <button className="add-btn" onClick={addSkill}>
-            <FaPlus /> Add new skill
-          </button>
+          <div className="mini-form">
+            <div className="form-row">
+              <input className="form-input" placeholder="Skill name" value={newSkill.name} onChange={(e)=>setNewSkill(s=>({...s,name:e.target.value}))} />
+              <select className="form-input" value={newSkill.level} onChange={(e)=>setNewSkill(s=>({...s,level:e.target.value}))}>
+                <option>Beginner</option>
+                <option>Intermediate</option>
+                <option>Expert</option>
+              </select>
+              <button className="add-btn" onClick={addSkill}><FaPlus /> Add new skill</button>
+            </div>
+          </div>
         </div>
 
         {/* Work Experience Section */}
@@ -341,11 +438,23 @@ function Profile() {
                   <li key={i}>{resp}</li>
                 ))}
               </ul>
+              <button className="remove-skill-btn" onClick={()=>removeExperience(index)} title="Remove"><FaTimes /></button>
             </div>
           ))}
-          <button className="add-btn">
-            <FaPlus /> Add Work Experience
-          </button>
+          <div className="mini-form">
+            <div className="form-row">
+              <input className="form-input" placeholder="Title" value={newExp.title} onChange={(e)=>setNewExp(s=>({...s,title:e.target.value}))} />
+              <input className="form-input" placeholder="Company" value={newExp.company} onChange={(e)=>setNewExp(s=>({...s,company:e.target.value}))} />
+            </div>
+            <div className="form-row">
+              <input className="form-input" placeholder="Period (e.g., Jan 2022 - Present)" value={newExp.period} onChange={(e)=>setNewExp(s=>({...s,period:e.target.value}))} />
+              <input className="form-input" placeholder="Location" value={newExp.location} onChange={(e)=>setNewExp(s=>({...s,location:e.target.value}))} />
+            </div>
+            <div className="form-row">
+              <textarea className="summary-textarea" placeholder="Responsibilities - one per line" value={newExp.responsibilitiesText} onChange={(e)=>setNewExp(s=>({...s,responsibilitiesText:e.target.value}))} />
+            </div>
+            <button className="add-btn" onClick={addExperience}><FaPlus /> Add Work Experience</button>
+          </div>
         </div>
 
         {/* Education Section */}
@@ -356,11 +465,19 @@ function Profile() {
               <h4 className="education-degree">{edu.degree}</h4>
               <p className="education-institution">{edu.institution}</p>
               <p className="education-period">{edu.period}</p>
+              <button className="remove-skill-btn" onClick={()=>removeEducation(index)} title="Remove"><FaTimes /></button>
             </div>
           ))}
-          <button className="add-btn">
-            <FaPlus /> Add Education
-          </button>
+          <div className="mini-form">
+            <div className="form-row">
+              <input className="form-input" placeholder="Degree" value={newEdu.degree} onChange={(e)=>setNewEdu(s=>({...s,degree:e.target.value}))} />
+              <input className="form-input" placeholder="Institution" value={newEdu.institution} onChange={(e)=>setNewEdu(s=>({...s,institution:e.target.value}))} />
+            </div>
+            <div className="form-row">
+              <input className="form-input" placeholder="Period" value={newEdu.period} onChange={(e)=>setNewEdu(s=>({...s,period:e.target.value}))} />
+            </div>
+            <button className="add-btn" onClick={addEducation}><FaPlus /> Add Education</button>
+          </div>
         </div>
 
         {/* Certifications Section */}
@@ -371,11 +488,19 @@ function Profile() {
               <h4 className="certification-name">{cert.name}</h4>
               <p className="certification-issuer">{cert.issuer}</p>
               <p className="certification-date">Date Obtained: {cert.date}</p>
+              <button className="remove-skill-btn" onClick={()=>removeCertification(index)} title="Remove"><FaTimes /></button>
             </div>
           ))}
-          <button className="add-btn">
-            <FaPlus /> Add Certification
-          </button>
+          <div className="mini-form">
+            <div className="form-row">
+              <input className="form-input" placeholder="Certification name" value={newCert.name} onChange={(e)=>setNewCert(s=>({...s,name:e.target.value}))} />
+              <input className="form-input" placeholder="Issuer" value={newCert.issuer} onChange={(e)=>setNewCert(s=>({...s,issuer:e.target.value}))} />
+            </div>
+            <div className="form-row">
+              <input className="form-input" placeholder="Date (e.g., May 2023)" value={newCert.date} onChange={(e)=>setNewCert(s=>({...s,date:e.target.value}))} />
+            </div>
+            <button className="add-btn" onClick={addCertification}><FaPlus /> Add Certification</button>
+          </div>
         </div>
 
         {/* Projects Section */}
@@ -387,11 +512,22 @@ function Profile() {
               <p className="project-description">{project.description}</p>
               <p className="project-technologies">Technologies Used: {project.technologies}</p>
               <a href={project.link} className="project-link">View Project</a>
+              <button className="remove-skill-btn" onClick={()=>removeProject(index)} title="Remove"><FaTimes /></button>
             </div>
           ))}
-          <button className="add-btn">
-            <FaPlus /> Add Project
-          </button>
+          <div className="mini-form">
+            <div className="form-row">
+              <input className="form-input" placeholder="Project name" value={newProject.name} onChange={(e)=>setNewProject(s=>({...s,name:e.target.value}))} />
+              <input className="form-input" placeholder="Technologies (comma-separated)" value={newProject.technologies} onChange={(e)=>setNewProject(s=>({...s,technologies:e.target.value}))} />
+            </div>
+            <div className="form-row">
+              <input className="form-input" placeholder="Link" value={newProject.link} onChange={(e)=>setNewProject(s=>({...s,link:e.target.value}))} />
+            </div>
+            <div className="form-row">
+              <textarea className="summary-textarea" placeholder="Short description" value={newProject.description} onChange={(e)=>setNewProject(s=>({...s,description:e.target.value}))} />
+            </div>
+            <button className="add-btn" onClick={addProject}><FaPlus /> Add Project</button>
+          </div>
         </div>
 
         {/* Languages Section */}
@@ -401,11 +537,21 @@ function Profile() {
             <div key={index} className="language-item">
               <span className="language-name">{lang.name}</span>
               <span className="language-level">- {lang.level}</span>
+              <button className="remove-skill-btn" onClick={()=>removeLanguage(index)} title="Remove"><FaTimes /></button>
             </div>
           ))}
-          <button className="add-btn">
-            <FaPlus /> Add Language
-          </button>
+          <div className="mini-form">
+            <div className="form-row">
+              <input className="form-input" placeholder="Language" value={newLang.name} onChange={(e)=>setNewLang(s=>({...s,name:e.target.value}))} />
+              <select className="form-input" value={newLang.level} onChange={(e)=>setNewLang(s=>({...s,level:e.target.value}))}>
+                <option>Basic</option>
+                <option>Conversational</option>
+                <option>Fluent</option>
+                <option>Native</option>
+              </select>
+              <button className="add-btn" onClick={addLanguage}><FaPlus /> Add Language</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

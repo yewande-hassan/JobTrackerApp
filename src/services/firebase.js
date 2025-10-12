@@ -10,6 +10,7 @@ import {
   doc, 
   updateDoc,
   addDoc,
+  onSnapshot,
 } from "firebase/firestore";
 import { getDatabase } from "firebase/database";
 import { getStorage } from "firebase/storage";
@@ -30,4 +31,4 @@ export { app, auth };
 export const db = getFirestore(app);
 export const rtdb = getDatabase(app);
 export const storage = getStorage(app);
-export { query, where, collection, getDocs,getDoc, doc, updateDoc,addDoc };
+export { query, where, collection, getDocs,getDoc, doc, updateDoc,addDoc, onSnapshot };
