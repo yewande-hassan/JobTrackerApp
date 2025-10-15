@@ -1,0 +1,45 @@
+.auth-page {
+  /* Make auth pages immune to app theme: force white background and dark text */
+  background-color: #ffffff;
+  color: #0b1220;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Container overrides for light appearance */
+.auth-page .login-container {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+}
+
+.auth-page .header {
+  color: #0b1220;
+}
+
+.auth-page .forms input {
+  color: #0b1220;
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+}
+
+.auth-page input::placeholder {
+  color: #6b7280; /* neutral placeholder */
+}
+
+.auth-page .btn {
+  background-color: #2f8bff;
+  color: #ffffff;
+}
+
+.auth-page .link {
+  color: #2f8bff;
+}
+
+.auth-page .error {
+  background-color: #ffe5e5;
+  color: #b00020;
+  border-color: #f5c2c2;
+}

@@ -6,8 +6,8 @@
     overflow: hidden;
 }
 .dashboard-container{
-    background-color: #101828;
-    color: #fff;
+  background-color: var(--bg);
+  color: var(--text);
     min-height: 100vh; 
     text-align: start;
     padding: 2rem;
@@ -26,7 +26,7 @@
     justify-content: space-between;
 }
 .section-column {
-  background-color: #121C2F;
+  background-color: var(--card-bg);
   padding: 1rem;
   border-radius: 12px;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
@@ -51,7 +51,7 @@
 }
 
 .section-header .count {
-  background-color: #192742;
+  background-color: var(--card-border);
   padding: 0.2rem 0.6rem;
   border-radius: 999px;
   font-size: 0.8rem;
@@ -61,8 +61,8 @@
 }
 
 .plus-btn {
-  background-color: #2d2f45;
-  color: #fff;
+  background-color: var(--card-border);
+  color: var(--text);
   border: none;
   border-radius: 50%;
   width: 15px;
@@ -74,11 +74,9 @@
   justify-content: center;
 }
 
-.plus-btn:hover {
-  background-color: #3c3f5a;
-}
+.plus-btn:hover { background-color: var(--primary); color: var(--primary-contrast); }
 .add{
-  background-color: #192742;
+  background-color: var(--card-border);
   display: flex;
   justify-content: center;
   align-items: center;

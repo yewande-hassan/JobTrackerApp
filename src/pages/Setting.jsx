@@ -3,16 +3,18 @@ import "../styles/Setting.css"
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-// import { useTheme } from "../context/ThemeContext";
+import { useTheme } from "../context/ThemeContext";
 import { db, query, where, collection, getDocs } from "../services/firebase";
 import { doc, deleteDoc as deleteDocDirect } from 'firebase/firestore'
+import ConfirmDialog from "../components/ConfirmDialog";
 
 function Setting() {
   const navigate = useNavigate();
   const { currentUser, logout } = useAuth();
-  // const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [busy, setBusy] = useState(false);
+  const [confirm, setConfirm] = useState({ open: false, kind: null });
 
   const exportJSON = async () => {
     if (!currentUser) return alert('Please sign in to export data');
@@ -80,7 +82,6 @@ function Setting() {
 
   const clearData = async () => {
     if (!currentUser) return alert('Please sign in to clear data');
-    if (!confirm('This will permanently delete all your job data. Continue?')) return;
     setBusy(true);
     try {
       const jobsRef = collection(db, 'job');
@@ -116,8 +117,8 @@ function Setting() {
             <label className="switch">
               <input
                 type="checkbox"
-                // checked={theme === 'dark'}
-                // onChange={() => toggleTheme()}
+                checked={theme === 'dark'}
+                onChange={() => toggleTheme()}
               />
               <span className="slider" />
             </label>
@@ -142,7 +143,7 @@ function Setting() {
             <p className="sub">Clear All Data</p>
             <p className="muted">Permanently delete all your job tracking</p>
             </div>
-            <button className="btn-danger" onClick={clearData} disabled={busy}>Clear Data</button> 
+            <button className="btn-danger" onClick={() => setConfirm({ open: true, kind: 'clear' })} disabled={busy}>Clear Data</button> 
           </div>
         </div>
 
@@ -162,18 +163,7 @@ function Setting() {
           <hr />
         <div className="setting-section">
           <div style={{ display: 'flex', justifyContent: 'flex-start', gap: 12 }}>
-            <button
-              className="btn-ghost"
-              onClick={async () => {
-                try {
-                  await logout();
-                  navigate("/");
-                } catch (err) {
-                  alert("Logout failed. Please try again.");
-                  console.error("Logout error", err);
-                }
-              }}
-            >
+            <button className="btn-ghost" onClick={() => setConfirm({ open: true, kind: 'logout' })}>
               Log out
             </button>
           </div>
@@ -181,6 +171,28 @@ function Setting() {
         </div>
 
       </div>
+
+      <ConfirmDialog
+        isOpen={confirm.open}
+        title={confirm.kind === 'logout' ? 'Log Out' : 'Clear All Data'}
+        message={
+          confirm.kind === 'logout'
+            ? 'Are you sure you want to log out of your account?'
+            : 'This will permanently delete all your job data. Continue?'
+        }
+        confirmText={confirm.kind === 'logout' ? 'Log out' : 'Delete'}
+        cancelText='Cancel'
+        variant={confirm.kind === 'logout' ? 'primary' : 'danger'}
+        onCancel={() => setConfirm({ open: false, kind: null })}
+        onConfirm={async () => {
+          if (confirm.kind === 'logout') {
+            try { await logout(); navigate('/'); } catch (err) { alert('Logout failed. Please try again.'); console.error('Logout error', err); }
+          } else if (confirm.kind === 'clear') {
+            await clearData();
+          }
+          setConfirm({ open: false, kind: null });
+        }}
+      />
     </div>
   )
 }

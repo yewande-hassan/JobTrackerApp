@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 import { useAuth } from "../context/AuthContext";
-import { addJob } from "../services/jobServices";
+import { addJob, getJobById, updateJob } from "../services/jobServices";
 import SavedJobForm from "../components/forms/SavedJobForms";
 import AppliedJobForm from "../components/forms/AppliedJobsForm";
 import InterviewJobForm from "../components/forms/InterviewJobsForm";
@@ -11,9 +11,13 @@ import OfferJobForm from "../components/forms/OfferJobsForm";
 import "../styles/Edit.css";
 import { db } from "../services/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import { useNavigate, useParams } from "react-router-dom";
 
-export default function Edit({ section, onCancel, onJobAdded }) {
+export default function Edit({ section, onCancel, onJobAdded, jobId }) {
   const { currentUser } = useAuth();
+  const navigate = useNavigate();
+  const params = useParams();
+  const editingId = params.id || jobId || null;
   const [jobDetails, setJobDetails] = useState({});
   const [status, setStatus] = useState("idle");
   const [profileResume, setProfileResume] = useState({ text: "", url: "", fileName: "" });
@@ -27,7 +31,7 @@ export default function Edit({ section, onCancel, onJobAdded }) {
     }));
   };
 
-  // Prefill applied form with profile resume metadata for convenience
+  // Load job when editing and prefill profile resume metadata for convenience
   useEffect(() => {
     async function loadProfileResume() {
       if (!currentUser) return;
@@ -49,22 +53,36 @@ export default function Edit({ section, onCancel, onJobAdded }) {
     loadProfileResume();
   }, [currentUser]);
 
+  useEffect(() => {
+    async function loadJob() {
+      if (!editingId) return;
+      const job = await getJobById(editingId);
+      if (!job) return;
+      // Prefill form fields with loaded job
+      setJobDetails({ ...job });
+    }
+    loadJob();
+  }, [editingId]);
+
   async function handleSubmit(e) {
     
     e.preventDefault();
     try {
       setStatus("submitting");
-      // If user didn't upload a resume file for this job, embed profile resume text
-      // addJob already extracts text if a File is provided; otherwise we pass resumeText explicitly
       const payload = { ...jobDetails };
       if (!payload.resume && profileResume.text) {
         payload.resumeText = profileResume.text;
       }
-      await addJob(payload, section, currentUser);
+      if (editingId) {
+        await updateJob(editingId, payload, currentUser);
+      } else {
+        await addJob(payload, section, currentUser);
+      }
       setStatus("success");
       setJobDetails({});
       if (onJobAdded) onJobAdded();
-      onCancel()
+  if (onCancel) onCancel();
+  if (params.id) navigate("/dashboard");
     } catch (err) {
       console.error(err);
       setStatus("error");
@@ -76,7 +94,7 @@ export default function Edit({ section, onCancel, onJobAdded }) {
       <p onClick={onCancel}>
         <IoIosArrowBack /> Go back
       </p>
-      <h3>{section} Jobs</h3>
+  <h3>{editingId ? "Edit Job" : `${section} Jobs`}</h3>
       <p>Please fill in the input fields below</p>
 
       <div className="form-container">
@@ -130,7 +148,20 @@ export default function Edit({ section, onCancel, onJobAdded }) {
           </div>
 
           <div className="btns">
-          <button type="button" className="btn-edit">
+          <button
+            type="button"
+            className="btn-edit"
+            onClick={() => {
+              // Build a transient payload similar to submit, but without saving
+              const payload = { ...jobDetails };
+              if (!payload.resume && profileResume.text) {
+                payload.resumeText = profileResume.text;
+              }
+              navigate("/match", {
+                state: { jobDetails: payload, profileResume },
+              });
+            }}
+          >
             Check Match
           </button>
             <button

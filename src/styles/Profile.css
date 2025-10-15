@@ -1,11 +1,11 @@
 /* Profile Page Styles - Modern Dark Theme */
 
 .profile-container {
-  background-color: #101828;
+  background-color: var(--bg);
   min-height: 100vh;
   text-align: start;
   padding: 52px;
-  color: #ffffff;
+  color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
 }
 
@@ -24,21 +24,21 @@
 .profile-title {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text);
   margin: 0 0 8px 0;
   line-height: 1.2;
 }
 
 .profile-subtitle {
   font-size: 1.1rem;
-  color: #9AA4B2;
+  color: var(--muted);
   margin: 0;
   line-height: 1.5;
 }
 
 .save-profile-btn {
-  background: #3B82F6;
-  color: #ffffff;
+  background: var(--primary);
+  color: var(--primary-contrast);
   border: none;
   padding: 12px 24px;
   border-radius: 8px;
@@ -48,9 +48,7 @@
   transition: background-color 0.2s ease;
 }
 
-.save-profile-btn:hover {
-  background: #2563EB;
-}
+.save-profile-btn:hover { opacity: 0.95; }
 
 /* Profile Main Section */
 .profile-main-section {
@@ -63,8 +61,8 @@
 
 /* Profile Photo Card */
 .profile-photo-card {
-  background: #10182D;
-  border: 1px solid #1d2939;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 16px;
   padding: 20px;
   display: flex;
@@ -100,21 +98,21 @@
 .avatar-initials {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--primary-contrast);
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .profile-name {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text);
   margin: 0 0 20px 0;
 }
 
 .change-photo-btn {
   background: transparent;
-  color: #3B82F6;
-  border: 1px solid #3B82F6;
+  color: var(--primary);
+  border: 1px solid var(--primary);
   padding: 12px 18px;
   border-radius: 10px;
   font-size: 1rem;
@@ -122,15 +120,12 @@
   transition: all 0.2s ease;
 }
 
-.change-photo-btn:hover {
-  background: #3B82F6;
-  color: #ffffff;
-}
+.change-photo-btn:hover { background: var(--primary); color: var(--primary-contrast); }
 
 /* Resume Card */
 .resume-card {
-  background: #10182D;
-  border: 1px solid #1d2939;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 16px;
   padding: 28px;
   display: grid;
@@ -145,14 +140,14 @@
 .resume-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text);
   margin: 0 0 16px 0;
 }
 
 .section-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text);
   margin: 0 0 16px 0;
 }
 
@@ -164,8 +159,8 @@
 }
 
 .file-upload-btn {
-  background: #3B82F6;
-  color: #ffffff;
+  background: var(--primary);
+  color: var(--primary-contrast);
   padding: 8px 16px;
   border-radius: 6px;
   font-size: 0.9rem;
@@ -174,25 +169,23 @@
   transition: background-color 0.2s ease;
 }
 
-.file-upload-btn:hover {
-  background: #2563EB;
-}
+.file-upload-btn:hover { opacity: 0.95; }
 
 .file-status {
-  color: #9AA4B2;
+  color: var(--muted);
   font-size: 0.9rem;
 }
 
 .resume-description {
-  color: #9AA4B2;
+  color: var(--muted);
   font-size: 0.9rem;
   margin: 0 0 16px 0;
   line-height: 1.4;
 }
 
 .sync-resume-btn {
-  background: #2563EB;
-  color: #ffffff;
+  background: var(--primary);
+  color: var(--primary-contrast);
   border: none;
   padding: 16px 28px;
   border-radius: 12px;
@@ -203,9 +196,7 @@
   transition: background-color 0.2s ease;
 }
 
-.sync-resume-btn:hover:not(:disabled) {
-  background: #2563EB;
-}
+.sync-resume-btn:hover:not(:disabled) { opacity: 0.95; }
 
 .sync-resume-btn:disabled {
   background: #4B5563;
@@ -216,19 +207,19 @@
 .resume-preview {
   margin-top: 16px;
   padding: 16px;
-  background: #0A0F18;
-  border: 1px solid #05315D;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 8px;
 }
 
 .resume-preview p {
   margin: 0 0 8px 0;
-  color: #CFE1FF;
+  color: var(--text);
   font-size: 0.9rem;
 }
 
 .resume-text-preview {
-  color: #9AA4B2;
+  color: var(--muted);
   font-size: 0.85rem;
   line-height: 1.4;
   max-height: 100px;
@@ -237,8 +228,8 @@
 
 /* Profile Sections */
 .profile-section {
-  background: #10182D;
-  border: 1px solid #1d2939;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 16px;
   padding: 28px;
   margin-bottom: 24px;
@@ -260,27 +251,22 @@
 .form-group label {
   font-size: 0.9rem;
   font-weight: 500;
-  color: #eaecf0;
+  color: var(--text);
 }
 
 .form-input {
   background: transparent;
-  border: 1px solid #344054;
+  border: 1px solid var(--card-border);
   border-radius: 8px;
   padding: 12px 16px;
-  color: #ffffff;
+  color: var(--text);
   font-size: 1rem;
   transition: border-color 0.2s ease;
 }
 
-.form-input:focus {
-  outline: none;
-  border-color: #3B82F6;
-}
+.form-input:focus { outline: none; border-color: var(--primary); }
 
-.form-input::placeholder {
-  color: #667085;
-}
+.form-input::placeholder { color: #667085; }
 
 select.form-input {
   -webkit-appearance: none;
@@ -330,8 +316,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .skill-item {
-  background: #101827;
-  border: 1px solid #344054;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 12px;
   padding: 16px;
   display: flex;
@@ -346,20 +332,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   gap: 4px;
 }
 
-.skill-name {
-  font-weight: 500;
-  color: #eaecf0;
-}
+.skill-name { font-weight: 500; color: var(--text); }
 
-.skill-level {
-  color: #98a2b3;
-  font-size: 0.9rem;
-}
+.skill-level { color: var(--muted); font-size: 0.9rem; }
 
 .remove-skill-btn {
   background: transparent;
   border: none;
-  color: #98a2b3;
+  color: var(--muted);
   cursor: pointer;
   padding: 4px;
   border-radius: 50%;
@@ -371,16 +351,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   transition: background-color 0.2s ease;
 }
 
-.remove-skill-btn:hover {
-  background: #344054;
-  color: #ffffff;
-}
+.remove-skill-btn:hover { background: var(--card-border); color: var(--text); }
 
 /* Add Button */
 .add-btn {
   background: transparent;
-  border: 1px solid #3B82F6;
-  color: #3B82F6;
+  border: 1px solid var(--primary);
+  color: var(--primary);
   padding: 12px 20px;
   border-radius: 8px;
   font-size: 0.9rem;
@@ -392,10 +369,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   margin-top: 16px;
 }
 
-.add-btn:hover {
-  background: #3B82F6;
-  color: #ffffff;
-}
+.add-btn:hover { background: var(--primary); color: var(--primary-contrast); }
 
 /* Mini inline add forms */
 .mini-form {
@@ -410,8 +384,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 /* Experience Items */
 .experience-item {
-  background: #101827;
-  border: 1px solid #344054;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 16px;
@@ -420,25 +394,25 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .experience-title {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #eaecf0;
+  color: var(--text);
   margin: 0 0 4px 0;
 }
 
 .experience-company {
   font-size: 1rem;
-  color: #eaecf0;
+  color: var(--text);
   margin: 0 0 4px 0;
   font-weight: 500;
 }
 
 .experience-period {
-  color: #98a2b3;
+  color: var(--muted);
   font-size: 0.9rem;
   margin: 0 0 12px 0;
 }
 
 .experience-responsibilities {
-  color: #98a2b3;
+  color: var(--muted);
   font-size: 0.9rem;
   line-height: 1.6;
   margin: 0;
@@ -451,8 +425,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 /* Education Items */
 .education-item {
-  background: #101827;
-  border: 1px solid #344054;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 16px;
@@ -461,27 +435,27 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .education-degree {
   font-size: 1.05rem;
   font-weight: 600;
-  color: #eaecf0;
+  color: var(--text);
   margin: 0 0 6px 0;
 }
 
 .education-institution {
   font-size: 0.95rem;
-  color: #eaecf0;
+  color: var(--text);
   margin: 0 0 4px 0;
   font-weight: 500;
 }
 
 .education-period {
-  color: #98a2b3;
+  color: var(--muted);
   font-size: 0.9rem;
   margin: 0;
 }
 
 /* Certification Items */
 .certification-item {
-  background: #0A0F18;
-  border: 1px solid #05315D;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 16px;
@@ -490,27 +464,27 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .certification-name {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text);
   margin: 0 0 8px 0;
 }
 
 .certification-issuer {
   font-size: 1rem;
-  color: #ffffff;
+  color: var(--text);
   margin: 0 0 4px 0;
   font-weight: 500;
 }
 
 .certification-date {
-  color: #9AA4B2;
+  color: var(--muted);
   font-size: 0.9rem;
   margin: 0;
 }
 
 /* Project Items */
 .project-item {
-  background: #0A0F18;
-  border: 1px solid #05315D;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 16px;
@@ -519,38 +493,36 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .project-name {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text);
   margin: 0 0 8px 0;
 }
 
 .project-description {
-  color: #CFE1FF;
+  color: var(--text);
   font-size: 0.9rem;
   margin: 0 0 8px 0;
   line-height: 1.5;
 }
 
 .project-technologies {
-  color: #9AA4B2;
+  color: var(--muted);
   font-size: 0.9rem;
   margin: 0 0 12px 0;
 }
 
 .project-link {
-  color: #3B82F6;
+  color: var(--primary);
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
 }
 
-.project-link:hover {
-  text-decoration: underline;
-}
+.project-link:hover { text-decoration: underline; }
 
 /* Language Items */
 .language-item {
-  background: #0A0F18;
-  border: 1px solid #05315D;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 8px;
   padding: 16px 20px;
   margin-bottom: 12px;
@@ -559,15 +531,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   gap: 8px;
 }
 
-.language-name {
-  font-weight: 500;
-  color: #ffffff;
-}
+.language-name { font-weight: 500; color: var(--text); }
 
-.language-level {
-  color: #9AA4B2;
-  font-size: 0.9rem;
-}
+.language-level { color: var(--muted); font-size: 0.9rem; }
 
 /* Responsive Design */
 @media (max-width: 768px) {

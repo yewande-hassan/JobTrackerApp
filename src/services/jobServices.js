@@ -1,4 +1,4 @@
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "./firebase";
 import { uploadFiles } from "./uploadFiles";
 import { extractTextFromFile } from "./textExtract";
@@ -46,6 +46,38 @@ export async function addJob(jobDetails, section, currentUser) {
     logoUrl,
     userId: currentUser.uid,
   });
+}
+
+export async function getJobById(id) {
+  const ref = doc(db, "job", id);
+  const snap = await getDoc(ref);
+  if (!snap.exists()) return null;
+  return { id: snap.id, ...snap.data() };
+}
+
+export async function updateJob(id, updates, currentUser) {
+  const ref = doc(db, "job", id);
+  const payload = { ...updates };
+  // If a new resume file is provided, upload and extract
+  if (updates.resume && typeof updates.resume === "object") {
+    const resumeUrl = await uploadFiles(updates.resume, "resumes");
+    payload.resume = resumeUrl;
+    try {
+      const extracted = await extractTextFromFile(updates.resume);
+      if (extracted && extracted.trim()) payload.resumeText = extracted;
+    } catch {
+      /* ignore extract failure */
+    }
+  }
+  // Keep userId guard if desired
+  if (currentUser?.uid) payload.userId = currentUser.uid;
+  await updateDoc(ref, payload);
+  return true;
+}
+
+export async function deleteJob(id) {
+  const ref = doc(db, "job", id);
+  await deleteDoc(ref);
 }
 
 // Service to call Firebase Cloud Function for job/resume match

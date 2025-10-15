@@ -6,16 +6,39 @@
   font-weight: 400;
   font-size: 14px;
   overflow: hidden;
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  /* color:#fff; */
+  color-scheme: light;
+  --bg: #ffffff;
+  --text: #0b1220;
+  --muted: #475467;
+  --card-bg: #f8fafc;
+  --card-border: #e5e7eb;
+  --primary: #2f8bff;
+  --primary-contrast: #ffffff;
+  --danger: #D9480F;
+  --accent: #8aaef2;
+  color: var(--text);
   overflow: scroll;
   overflow-x: hidden;
-  background-color: #fff;
+  background-color: var(--bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0b1220;
+  --text: rgba(255,255,255,0.92);
+  --muted: #9aa4b2;
+  --card-bg: #101B2D;
+  --card-border: #05315D;
+  --primary: #2f8bff;
+  --primary-contrast: #ffffff;
+  --danger: #D9480F;
+  --accent: #8aaef2;
+  background-color: var(--bg);
+  color: var(--text);
 }
 
 body {

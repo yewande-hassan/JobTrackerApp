@@ -1,16 +1,20 @@
 import "../styles/Card.css";
 import { forwardRef, useEffect, useMemo, useRef, useState } from "react";
+import { IoClose } from "react-icons/io5";
+import { deleteJob } from "../services/jobServices";
+import ConfirmDialog from "./ConfirmDialog";
 import { getJobResumeMatch, estimateLocalMatch } from "../services/jobServices";
 import { fetchJobDescriptionFromUrl } from "../services/jobDescriptionServices";
 import { db } from "../services/firebase";
 import { doc, updateDoc } from "firebase/firestore";
 
 
-const Card = forwardRef(({ job, resumeText, onClick, ...dragProps }, ref) => {
+const Card = forwardRef(({ job, resumeText, onClick, onDeleted, ...dragProps }, ref) => {
   const [match, setMatch] = useState(null);
   const [instantMatch, setInstantMatch] = useState(null);
   const [fetchedDesc, setFetchedDesc] = useState("");
   const fetchingRef = useRef(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   // Try to fetch description from job_url if not provided
   useEffect(() => {
@@ -76,7 +80,7 @@ const Card = forwardRef(({ job, resumeText, onClick, ...dragProps }, ref) => {
 
   return (
     <>
-      <div className="card" onClick={onClick} ref={ref} {...dragProps}>
+  <div className="card" onClick={() => { if (!confirmOpen) onClick?.(); }} ref={ref} {...dragProps}>
         <div className="card-heading">
           <span className="icon">
             {job.logoUrl ? (
@@ -103,6 +107,30 @@ const Card = forwardRef(({ job, resumeText, onClick, ...dragProps }, ref) => {
             <p className="match">{`${(typeof match === "number" ? match : (instantMatch ?? 0))}% Match`}</p>
           </div>
         </div>
+        <button
+            className="card-delete"
+            aria-label="Delete job"
+            onClick={(e) => { e.stopPropagation(); setConfirmOpen(true); }}
+          >
+            <IoClose />
+          </button>
+          <ConfirmDialog
+            isOpen={confirmOpen}
+            title="Delete Job"
+            message="Are you sure you want to delete this job?"
+            confirmText="Delete"
+            cancelText="Cancel"
+            variant="danger"
+            onCancel={() => setConfirmOpen(false)}
+            onConfirm={async () => {
+              try {
+                await deleteJob(job.id);
+                if (onDeleted) onDeleted(job.id);
+              } finally {
+                setConfirmOpen(false);
+              }
+            }}
+          />
       </div>
     </>
   );

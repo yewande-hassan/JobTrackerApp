@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
+import confetti from "canvas-confetti";
 import Card from "../components/Card";
 import Navbar from "../components/Navbar";
-import Modal from "../components/Modal";
 import {sectionConfig } from "../data/CardData";
 import "../styles/Dashboard.css";
 import { FaPlus } from "react-icons/fa";
@@ -12,9 +12,9 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 const sections = ["Saved", "Applied", "Interview", "Offer"];
 
 function Dashboard() {
-  const [selectedJob, setSelectedJob] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // Inline Edit rendering when creating or editing
   const [showEdit, setShowEdit] = useState(null);
+  const [editingJobId, setEditingJobId] = useState(null);
   const [jobs, setJobs] = useState([]);
   const [profileResumeText, setProfileResumeText] = useState("");
   const { currentUser } = useAuth();
@@ -36,14 +36,11 @@ function Dashboard() {
   }, [currentUser?.uid]);
 
   const handleCardClick = (job) => {
-    setSelectedJob(job);
-    setIsModalOpen(true);
+    setEditingJobId(job.id);
+    setShowEdit(job.status || "Saved");
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedJob(null);
-  };
+  // no-op: modal removed
 
   const handleEdit = (section) => {
     setShowEdit(section);
@@ -88,6 +85,28 @@ function Dashboard() {
     // Update Firestore
     const jobRef = doc(db, "job", draggableId);
     await updateDoc(jobRef, { status: newStatus });
+
+    // Fire confetti when moved into the Offer column
+    if (newStatus === "Offer") {
+      // A quick burst
+      confetti({
+        particleCount: 120,
+        spread: 70,
+        origin: { y: 0.3 },
+        scalar: 1.1,
+      });
+      // A second burst with different angle/colors for flair
+      setTimeout(() => {
+        confetti({
+          particleCount: 90,
+          spread: 100,
+          startVelocity: 45,
+          ticks: 200,
+          colors: ["#34d399", "#3b82f6", "#f59e0b", "#ef4444"],
+          origin: { y: 0.2 }
+        });
+      }, 250);
+    }
   };
   return (
     <div className="container">
@@ -96,7 +115,8 @@ function Dashboard() {
         {showEdit ? (
           <Edit
             section={showEdit}
-            onCancel={() => setShowEdit(null)}
+            jobId={editingJobId}
+            onCancel={() => { setShowEdit(null); setEditingJobId(null); }}
             onJobAdded={fetchJobs}
           />
         ) : (
@@ -143,6 +163,7 @@ function Dashboard() {
                                   job={job}
                                   resumeText={job.resumeText || profileResumeText}
                                   onClick={() => handleCardClick(job)}
+                                  onDeleted={(id) => setJobs((prev) => prev.filter((j) => j.id !== id))}
                                   ref={provided.innerRef}
                                   {...provided.draggableProps}
                                   {...provided.dragHandleProps}
@@ -167,8 +188,7 @@ function Dashboard() {
           </>
         )}
 
-        {/* Modal is conditionally rendered here */}
-        {isModalOpen && <Modal job={selectedJob} onClose={handleCloseModal} />}
+  {/* Modal disabled in favor of direct edit navigation */}
       </div>
     </div>
   );

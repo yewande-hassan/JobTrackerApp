@@ -1,6 +1,7 @@
 .setting-container{
-    background-color: #101828;
-     text-align: start;
+    background-color: var(--bg);
+    color: var(--text);
+    text-align: start;
     padding: 52px;
 }
 .setting-header{
@@ -11,9 +12,9 @@
 }
 
 .setting-card{
-    background:#101B2D;
+    background: var(--card-bg);
     width: 90%;
-    border: 1px solid #05315D;
+    border: 1px solid var(--card-border);
     padding: 28px;
     border-radius: 12px;
     margin-top: 20px;
@@ -22,12 +23,12 @@
     margin-bottom: 2rem;
     margin-top: 1rem;
 }
-.setting-card h4{ color: #cfe1ff; margin: 0 0 6px 0 }
-.sub{ color: #cfe1ff; font-weight: 500 }
-.muted{ color: #9aa4b2; margin: 6px 0 12px }
+.setting-card h4{ color: var(--text); margin: 0 0 6px 0 }
+.sub{ color: var(--text); font-weight: 500 }
+.muted{ color: var(--muted); margin: 6px 0 12px }
 
-.btn-primary{ background:#8aaef2; color:white; padding:5px 12px; border-radius:8px; border:none }
-.btn-danger{ background:#D9480F; color:white; padding:5px 12px; border-radius:8px; border:none }
+.btn-primary{ background: var(--accent); color: var(--primary-contrast); padding:5px 12px; border-radius:8px; border:none }
+.btn-danger{ background: var(--danger); color: var(--primary-contrast); padding:5px 12px; border-radius:8px; border:none }
 .btn-ghost{ background:transparent; border:none; color:#FF6B6B }
 
 /* Toggle switch */
@@ -60,9 +61,7 @@
     transition: 0.3s;
     border-radius: 50%;
 }
-.switch input:checked + .slider{
-    background-color: #2f8bff;
-}
+.switch input:checked + .slider{ background-color: var(--primary); }
 .switch input:checked + .slider:before{
     transform: translateX(20px);
 }
