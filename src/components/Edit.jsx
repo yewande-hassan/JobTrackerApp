@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 import { useAuth } from "../context/AuthContext";
+import { addNotification } from "../services/notificationsService";
 import { addJob, getJobById, updateJob } from "../services/jobServices";
 import SavedJobForm from "../components/forms/SavedJobForms";
 import AppliedJobForm from "../components/forms/AppliedJobsForm";
@@ -77,6 +78,15 @@ export default function Edit({ section, onCancel, onJobAdded, jobId }) {
         await updateJob(editingId, payload, currentUser);
       } else {
         await addJob(payload, section, currentUser);
+        // Notify on new application/job saved
+        try {
+          await addNotification(currentUser, {
+            title: section === "Applied" ? "Application submitted" : "Job saved",
+            body: `${payload.job_title || "A role"} at ${payload.company_name || "the company"} was added to ${section}.`
+          });
+        } catch {
+          /* ignore notification failure */
+        }
       }
       setStatus("success");
       setJobDetails({});

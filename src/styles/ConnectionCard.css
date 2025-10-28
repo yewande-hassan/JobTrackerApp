@@ -92,3 +92,30 @@ font-size: 0.8rem;
   border-radius: 6px;
 }
 
+
+/* tiny floating delete button (same look as job cards) */
+.card { position: relative; overflow: visible; }
+.card-delete{
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #1f2b48, #0f1828);
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.45);
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transform: scale(1);
+  transition: transform .2s ease, background .2s ease;
+  z-index: 2;
+}
+.card:hover .card-delete{ transform: scale(1.05); }
+.card-delete:hover{ background:#2b3b6d }
+.card-delete svg{ width: 14px; height: 14px }
+

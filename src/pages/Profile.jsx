@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import "../styles/Profile.css";
-import { db } from "../services/firebase";
+import { db, onSnapshot } from "../services/firebase";
 import { uploadFiles } from "../services/uploadFiles";
 import { useAuth } from "../context/AuthContext";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { parseResumeToProfile } from "../services/resumeServices";
+import { addNotification } from "../services/notificationsService";
 import { extractTextFromFile } from "../services/textExtract";
 import { FaPlus, FaTimes } from "react-icons/fa";
 
@@ -45,26 +46,37 @@ function Profile() {
   const [newProject, setNewProject] = useState({ name: "", description: "", technologies: "", link: "" });
   const [newLang, setNewLang] = useState({ name: "", level: "Basic" });
 
-  // Load profile data from Firestore
+  // Load and subscribe to profile data from Firestore
   useEffect(() => {
-    async function fetchProfile() {
-      if (!currentUser) return;
-      const userRef = doc(db, "users", currentUser.uid);
+    if (!currentUser?.uid) return;
+    const userRef = doc(db, "users", currentUser.uid);
+    let unsub = () => {};
+    (async () => {
       const snap = await getDoc(userRef);
       if (snap.exists()) {
-        const data = snap.data();
-        setProfileData(prev => ({ ...prev, ...data }));
-      } else if (currentUser) {
-        // Prefill some basics from auth if user doc doesn't exist yet
+        setProfileData(prev => ({ ...prev, ...snap.data() }));
+      } else {
         setProfileData(prev => ({
           ...prev,
           fullName: currentUser.displayName || "",
           email: currentUser.email || "",
         }));
       }
-    }
-    fetchProfile();
-  }, [currentUser]);
+      // Subscribe for live updates
+      unsub = onSnapshot(userRef, (s) => {
+        const data = s.data();
+        if (data) setProfileData(prev => ({ ...prev, ...data }));
+      });
+    })();
+    return () => unsub();
+  }, [currentUser?.uid, currentUser?.displayName, currentUser?.email]);
+
+  // Helper to persist partial changes
+  const savePartial = async (partial) => {
+    if (!currentUser?.uid) return;
+    const userRef = doc(db, "users", currentUser.uid);
+    await setDoc(userRef, partial, { merge: true });
+  };
 
   // Handle resume file upload
   async function handleSyncResume() {
@@ -103,6 +115,12 @@ function Profile() {
   resumeText: safeText,
         ...parsed,
       }));
+      try {
+        await addNotification(currentUser, {
+          title: "Resume synced",
+          body: "Your resume was synced and profile sections updated."
+        });
+      } catch { /* ignore */ }
       alert("Resume synced to profile!");
     } catch (error) {
       console.error("Failed to sync resume:", error);
@@ -127,17 +145,22 @@ function Profile() {
     }));
   };
 
-  const addSkill = () => {
+  const addSkill = async () => {
     if (!newSkill.name) return;
-    setProfileData(prev => ({ ...prev, skills: [...prev.skills, newSkill] }));
+    setProfileData(prev => {
+      const updated = [...prev.skills, newSkill];
+      savePartial({ skills: updated });
+      return { ...prev, skills: updated };
+    });
     setNewSkill({ name: "", level: "Beginner" });
   };
 
   const removeSkill = (index) => {
-    setProfileData(prev => ({
-      ...prev,
-      skills: prev.skills.filter((_, i) => i !== index)
-    }));
+    setProfileData(prev => {
+      const updated = prev.skills.filter((_, i) => i !== index);
+      savePartial({ skills: updated });
+      return { ...prev, skills: updated };
+    });
   };
 
   // Experience
@@ -147,51 +170,91 @@ function Profile() {
       ? newExp.responsibilitiesText.split("\n").map(s => s.trim()).filter(Boolean)
       : [];
     const item = { title: newExp.title, company: newExp.company, period: newExp.period, location: newExp.location, responsibilities };
-    setProfileData(prev => ({ ...prev, workExperience: [...prev.workExperience, item] }));
+    setProfileData(prev => {
+      const updated = [...prev.workExperience, item];
+      savePartial({ workExperience: updated });
+      return { ...prev, workExperience: updated };
+    });
     setNewExp({ title: "", company: "", period: "", location: "", responsibilitiesText: "" });
   };
   const removeExperience = (index) => {
-    setProfileData(prev => ({ ...prev, workExperience: prev.workExperience.filter((_, i) => i !== index) }));
+    setProfileData(prev => {
+      const updated = prev.workExperience.filter((_, i) => i !== index);
+      savePartial({ workExperience: updated });
+      return { ...prev, workExperience: updated };
+    });
   };
 
   // Education
   const addEducation = () => {
     if (!newEdu.degree || !newEdu.institution) return;
-    setProfileData(prev => ({ ...prev, education: [...prev.education, newEdu] }));
+    setProfileData(prev => {
+      const updated = [...prev.education, newEdu];
+      savePartial({ education: updated });
+      return { ...prev, education: updated };
+    });
     setNewEdu({ degree: "", institution: "", period: "" });
   };
   const removeEducation = (index) => {
-    setProfileData(prev => ({ ...prev, education: prev.education.filter((_, i) => i !== index) }));
+    setProfileData(prev => {
+      const updated = prev.education.filter((_, i) => i !== index);
+      savePartial({ education: updated });
+      return { ...prev, education: updated };
+    });
   };
 
   // Certifications
   const addCertification = () => {
     if (!newCert.name) return;
-    setProfileData(prev => ({ ...prev, certifications: [...prev.certifications, newCert] }));
+    setProfileData(prev => {
+      const updated = [...prev.certifications, newCert];
+      savePartial({ certifications: updated });
+      return { ...prev, certifications: updated };
+    });
     setNewCert({ name: "", issuer: "", date: "" });
   };
   const removeCertification = (index) => {
-    setProfileData(prev => ({ ...prev, certifications: prev.certifications.filter((_, i) => i !== index) }));
+    setProfileData(prev => {
+      const updated = prev.certifications.filter((_, i) => i !== index);
+      savePartial({ certifications: updated });
+      return { ...prev, certifications: updated };
+    });
   };
 
   // Projects
   const addProject = () => {
     if (!newProject.name) return;
-    setProfileData(prev => ({ ...prev, projects: [...prev.projects, newProject] }));
+    setProfileData(prev => {
+      const updated = [...prev.projects, newProject];
+      savePartial({ projects: updated });
+      return { ...prev, projects: updated };
+    });
     setNewProject({ name: "", description: "", technologies: "", link: "" });
   };
   const removeProject = (index) => {
-    setProfileData(prev => ({ ...prev, projects: prev.projects.filter((_, i) => i !== index) }));
+    setProfileData(prev => {
+      const updated = prev.projects.filter((_, i) => i !== index);
+      savePartial({ projects: updated });
+      return { ...prev, projects: updated };
+    });
   };
 
   // Languages
   const addLanguage = () => {
     if (!newLang.name) return;
-    setProfileData(prev => ({ ...prev, languages: [...prev.languages, newLang] }));
+    setProfileData(prev => {
+      const updated = [...prev.languages, newLang];
+      savePartial({ languages: updated });
+      return { ...prev, languages: updated };
+    });
     setNewLang({ name: "", level: "Basic" });
   };
   const removeLanguage = (index) => {
-    setProfileData(prev => ({ ...prev, languages: prev.languages.filter((_, i) => i !== index) }));
+    setProfileData(prev => {
+      const updated = prev.languages.filter((_, i) => i !== index);
+      savePartial({ languages: updated });
+      return { ...prev, languages: updated };
+    });
   };
 
   const getInitials = (name, email) => {

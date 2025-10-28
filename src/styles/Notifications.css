@@ -1,0 +1,31 @@
+.notifications-container{ background: var(--bg); color: var(--text); text-align: start; padding: 52px }
+.notifications-header{ display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px }
+.notif-title{ font-size: 32px; font-weight: 700; margin: 0 }
+.notif-subtitle{ color: var(--muted); margin-top: 8px }
+.btn-mark-all{ background: var(--primary); color: var(--primary-contrast); border: 1px solid #0ea5ff; padding: 12px 20px; border-radius: 10px; cursor: pointer }
+.btn-mark-all:disabled{ opacity:.6; cursor:not-allowed }
+
+.notif-panel{ border: 1.5px solid #0ea5ff; border-radius: 12px; padding: 24px; background: linear-gradient(180deg, rgba(16,27,45,0.4), rgba(10,17,31,0.4)); }
+
+.notif-item{ display:flex; align-items: center; justify-content: space-between; padding: 20px; border-radius: 12px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); margin-bottom: 16px; cursor: pointer; position: relative; overflow: visible }
+.notif-item.read{ opacity: 0.7 }
+.notif-item:hover{ background: rgba(255,255,255,0.04) }
+
+.notif-content{ display:flex; flex-direction: column; gap: 6px }
+.notif-item-title{ font-size: 18px; font-weight: 700; margin: 0 }
+.notif-item-body{ color: var(--muted); margin: 0 }
+.notif-time{ color: var(--muted); font-size: 12px }
+
+.notif-dot{ width: 10px; height: 10px; border-radius: 50%; background: #0ea5ff }
+.notif-dot.hidden{ visibility: hidden }
+
+.notif-delete{ position: absolute; top: -10px; right: -10px; width: 26px; height: 26px; border-radius: 999px; background: linear-gradient(180deg, #1f2b48, #0f1828); border: 1px solid rgba(255,255,255,0.18); box-shadow: 0 4px 10px rgba(0,0,0,0.45); color: #fff; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; opacity: 1; transform: scale(1); transition: transform .2s ease, background .2s ease; z-index: 2 }
+.notif-item:hover .notif-delete{ transform: scale(1.05) }
+.notif-delete:hover{ background:#2b3b6d }
+.notif-delete svg{ width: 14px; height: 14px }
+
+.empty{ color: var(--muted) }
+
+@media(max-width: 720px){
+  .notifications-container{ padding: 20px }
+}

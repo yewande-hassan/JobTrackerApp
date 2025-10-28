@@ -48,6 +48,8 @@
     align-items: center;
     width: 10vw;
 }
+.bell-wrapper{ position: relative; display: inline-flex; align-items: center; justify-content: center; }
+.bell-dot{ position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; background: #ef4444; border-radius: 999px; box-shadow: 0 0 0 2px var(--card-bg); }
 .search{
 position: relative;
 width: 55%;

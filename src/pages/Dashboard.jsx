@@ -8,6 +8,7 @@ import { FaPlus } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
 import Edit from "../components/Edit";
 import { db, query, where, collection,getDocs,doc,updateDoc, onSnapshot } from "../services/firebase";
+import { addNotification } from "../services/notificationsService";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 const sections = ["Saved", "Applied", "Interview", "Offer"];
 
@@ -75,6 +76,7 @@ function Dashboard() {
 
     const { draggableId, destination } = result;
     const newStatus = destination.droppableId;
+    const moved = jobs.find((j) => j.id === draggableId);
 
     // Update local state
     setJobs((prev) =>
@@ -106,6 +108,13 @@ function Dashboard() {
           origin: { y: 0.2 }
         });
       }, 250);
+    }
+
+    // Notifications for stage changes
+    if (currentUser && moved && (newStatus === "Interview" || newStatus === "Offer")) {
+      const title = newStatus === "Interview" ? "Interview stage" : "Offer stage reached";
+      const body = `Your application for ${moved.job_title || "a role"} at ${moved.company_name || "the company"} is now in ${newStatus}.`;
+  try { await addNotification(currentUser, { title, body }); } catch { /* noop */ }
     }
   };
   return (

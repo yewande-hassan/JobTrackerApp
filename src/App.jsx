@@ -9,6 +9,7 @@ import Profile from './pages/Profile'
 import Match from './pages/Match'
 import Signup from './pages/authPages/Signup'
 import Edit from './components/Edit'
+import Notifications from './pages/Notifications'
 
 
 
@@ -29,6 +30,7 @@ function App() {
   <Route path="/match" element={<Match/>}/>
       <Route path="/connection" element={<Connection/>}/>
       <Route path="/profile" element={<Profile/>}/>
+  <Route path="/notifications" element={<Notifications/>}/>
       </Routes>
     </Router>
   )
