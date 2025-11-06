@@ -9,17 +9,37 @@ import { db } from "../services/firebase";
 import { doc, updateDoc } from "firebase/firestore";
 
 
+function useInViewport(elRef, rootMargin = "0px") {
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = elRef?.current;
+    if (!el || typeof IntersectionObserver === "undefined") { setInView(true); return; }
+    const obs = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { root: null, rootMargin, threshold: 0.01 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [elRef, rootMargin]);
+  return inView;
+}
+
 const Card = forwardRef(({ job, resumeText, onClick, onDeleted, ...dragProps }, ref) => {
   const [match, setMatch] = useState(null);
   const [instantMatch, setInstantMatch] = useState(null);
   const [fetchedDesc, setFetchedDesc] = useState("");
   const fetchingRef = useRef(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const localRef = useRef(null);
+  const attachRef = (node) => {
+    localRef.current = node;
+    if (typeof ref === "function") ref(node);
+    else if (ref) ref.current = node;
+  };
+  const inView = useInViewport(localRef, "100px");
 
   // Try to fetch description from job_url if not provided
   useEffect(() => {
     let canceled = false;
     async function maybeFetchDesc() {
+      if (!inView) return;
       if (job.description || !job.job_url || fetchedDesc || fetchingRef.current) return;
       fetchingRef.current = true;
       try {
@@ -40,7 +60,7 @@ const Card = forwardRef(({ job, resumeText, onClick, onDeleted, ...dragProps }, 
     }
     maybeFetchDesc();
     return () => { canceled = true; };
-  }, [job.description, job.job_url, fetchedDesc, job.id]);
+  }, [job.description, job.job_url, fetchedDesc, job.id, inView]);
 
   const effectiveDescription = useMemo(() => {
     return job.description || fetchedDesc || job.job_title || "";
@@ -58,6 +78,7 @@ const Card = forwardRef(({ job, resumeText, onClick, onDeleted, ...dragProps }, 
   useEffect(() => {
     let canceled = false;
     async function computeMatch() {
+      if (!inView) return;
       if (!resumeText || !effectiveDescription) {
         setInstantMatch(0);
         setMatch(0);
@@ -76,11 +97,11 @@ const Card = forwardRef(({ job, resumeText, onClick, onDeleted, ...dragProps }, 
     }
     computeMatch();
     return () => { canceled = true; };
-  }, [effectiveDescription, resumeText]);
+  }, [effectiveDescription, resumeText, inView]);
 
   return (
     <>
-  <div className="card" onClick={() => { if (!confirmOpen) onClick?.(); }} ref={ref} {...dragProps}>
+  <div className="card" onClick={() => { if (!confirmOpen) onClick?.(); }} ref={attachRef} {...dragProps}>
         <div className="card-heading">
           <span className="icon">
             {job.logoUrl ? (

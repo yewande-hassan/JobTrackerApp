@@ -1,9 +1,25 @@
-import * as pdfjsLib from "pdfjs-dist";
-import pdfWorker from "pdfjs-dist/build/pdf.worker.min.mjs?url";
-import mammoth from "mammoth";
+// Heavy libraries (pdfjs, mammoth) are dynamically imported to keep initial bundle small.
+let _pdfjsLib = null;
+let _pdfWorkerUrl = null;
+async function ensurePdfJs() {
+  if (_pdfjsLib) return _pdfjsLib;
+  const [pdfjsLib, workerUrl] = await Promise.all([
+    import("pdfjs-dist"),
+    import("pdfjs-dist/build/pdf.worker.min.mjs?url"),
+  ]);
+  pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl.default || workerUrl;
+  _pdfjsLib = pdfjsLib;
+  _pdfWorkerUrl = workerUrl.default || workerUrl;
+  return _pdfjsLib;
+}
 
-// Configure pdfjs worker using bundler-provided asset URL
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
+let _mammoth = null;
+async function ensureMammoth() {
+  if (_mammoth) return _mammoth;
+  const mod = await import("mammoth");
+  _mammoth = mod.default || mod;
+  return _mammoth;
+}
 
 export async function extractTextFromFile(file) {
   if (!file) return "";
@@ -21,6 +37,7 @@ export async function extractTextFromFile(file) {
 async function extractFromPdf(file) {
   try {
     const arrayBuffer = await file.arrayBuffer();
+    const pdfjsLib = await ensurePdfJs();
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
     let text = "";
     for (let i = 1; i <= pdf.numPages; i++) {
@@ -45,6 +62,7 @@ async function extractFromPdf(file) {
 async function extractFromDocx(file) {
   try {
     const arrayBuffer = await file.arrayBuffer();
+    const mammoth = await ensureMammoth();
     const { value } = await mammoth.extractRawText({ arrayBuffer });
     return (value || "").trim();
   } catch (e) {

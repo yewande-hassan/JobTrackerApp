@@ -1,23 +1,22 @@
 import "../styles/Navbar.css"
 import { Link, useNavigate } from "react-router-dom"
 import { FaSearch, FaBell, FaUserCircle} from 'react-icons/fa';
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { subscribeNotifications } from "../services/notificationsService";
+import { subscribeUnreadPresence } from "../services/notificationsService";
 
 
 
 function Navbar() {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
-  const [notifs, setNotifs] = useState([]);
+  const [hasUnread, setHasUnread] = useState(false);
 
   useEffect(() => {
-    const unsub = subscribeNotifications(currentUser, setNotifs);
+    const unsub = subscribeUnreadPresence(currentUser, setHasUnread);
     return () => unsub && unsub();
   }, [currentUser]);
 
-  const unreadCount = useMemo(() => notifs.filter(n => !n.read).length, [notifs]);
   return (
     <div className="navbar-container">
       <h1 className="logo-icon">Track<span className="home">MyJob</span></h1>
@@ -31,7 +30,7 @@ function Navbar() {
         <FaSearch />
         <span className="bell-wrapper" onClick={() => navigate("/notifications")}>
           <FaBell style={{ cursor: "pointer" }} />
-          {unreadCount > 0 && <span className="bell-dot" aria-label={`You have ${unreadCount} unread notifications`} />}
+          {hasUnread && <span className="bell-dot" aria-label={`You have unread notifications`} />}
         </span>
         <FaUserCircle style={{ cursor: "pointer" }} onClick={() => navigate("/profile")}/>
       </div>
