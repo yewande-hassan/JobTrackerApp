@@ -22,8 +22,10 @@
   color: #AFABAB
 }
 .cards{
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 .section-column {
   background-color: var(--card-bg);
@@ -86,4 +88,15 @@
   max-width: 300px;
   height: 5vh;
   width:100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .top-header { width: 100%; }
+}
+
+@media (max-width: 768px) {
+  .dashboard-container { padding: 1rem; }
+  .cards { justify-content: flex-start; }
+  .section-column, .add { max-width: 100%; }
 }
