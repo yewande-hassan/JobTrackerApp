@@ -1,12 +1,65 @@
-# React + Vite
+# Job Tracker App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + Vite app backed by Firebase (Auth, Firestore, Storage). This doc covers local setup, Vercel deployment, required environment variables, and common production issues.
 
-Currently, two official plugins are available:
+## Quick start
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Local development:
 
-## Expanding the ESLint configuration
+```bash
+npm install
+cp .env.example .env # fill in your values
+npm run dev
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Required environment variables
+
+Create a `.env` for local dev or add these in Vercel (Project Settings → Environment Variables). All keys must be prefixed with `VITE_`:
+
+- VITE_FIREBASE_API_KEY
+- VITE_FIREBASE_AUTH_DOMAIN
+- VITE_FIREBASE_PROJECTID
+- VITE_FIREBASE_STORAGEBUCKET
+- VITE_FIREBASE_MESSAGINGSENDERID
+- VITE_FIREBASE_APPID
+
+Optional function URLs (if you have Cloud Functions):
+
+- VITE_MATCH_FUNCTION_URL
+- VITE_JOB_DESC_FUNCTION_URL
+
+See `.env.example` for the expected format.
+
+## Vercel deployment
+
+1. Push this repo to GitHub and import it in Vercel.
+2. Add the environment variables above in Vercel → Project Settings → Environment Variables.
+3. Ensure your Firebase Auth authorized domains include your Vercel preview domain(s) and production domain.
+4. We include a `vercel.json` that rewrites all routes to `/index.html` for SPA routing.
+5. Deploy. The root route and deep links like `/dashboard` should render correctly.
+
+## Troubleshooting a blank/white screen in production
+
+If your deployed domain shows a blank screen:
+
+1. Open the browser DevTools console on the production site and look for errors.
+	- A common one is `auth/invalid-api-key` or other Firebase config errors when env vars are missing in the build environment.
+2. Confirm Vercel environment variables are configured and match `.env.example`.
+	- Variable names must start with `VITE_`.
+	- Trigger a new deploy after adding/updating env vars.
+3. Ensure the SPA rewrite is present (we ship `vercel.json`). Deep links should not 404.
+4. Confirm your Firebase Auth → Authorized domains includes your Vercel domain (e.g., `your-app.vercel.app`) and custom domain.
+5. Hard refresh and/or clear cache if you recently changed env vars and redeployed.
+
+We also log a clear message at app startup if required Firebase env vars are missing (`src/services/firebase.js`).
+
+## Scripts
+
+- `npm run dev` – start local dev server
+- `npm run build` – production build
+- `npm run preview` – preview production build locally
+
+## Tech
+
+- React, Vite, React Router
+- Firebase Auth, Firestore, Storage
