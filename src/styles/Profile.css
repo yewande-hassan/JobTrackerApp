@@ -547,8 +547,20 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
   
   .profile-main-section {
+    display: flex; /* override grid */
     flex-direction: column;
     gap: 24px;
+  }
+  .resume-card {
+    display: flex; /* stack content + button */
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+  }
+  .sync-resume-btn {
+    width: 100%;
+    justify-self: stretch;
+    margin-top: 4px;
   }
   
   .profile-photo-card {
@@ -563,6 +575,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   .skills-grid {
     grid-template-columns: 1fr;
   }
+  .form-row {
+    grid-template-columns: 1fr; /* prevent horizontal overflow */
+  }
+  .mini-form .form-row {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 480px) {
@@ -573,4 +591,21 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   .profile-container {
     padding: 16px;
   }
+  .save-profile-btn {
+    width: 100%;
+  }
+  .profile-header-content p {
+    font-size: 0.95rem;
+  }
+  .add-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Long text wrapping improvements */
+.summary-textarea,
+.project-description,
+.experience-responsibilities li {
+  overflow-wrap: anywhere;
 }
